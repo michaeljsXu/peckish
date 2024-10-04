@@ -1,21 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 
 export default function Page() {
-  const [name, setName] = useState('John Doe');
-  const [tools, setTools] = useState('oven, microwave, stove');
-  const [dietType, setDietType] = useState('Vegetarian');
-  const [dietaryRestrictions, setDietaryRestrictions] = useState('nuts, dairy');
   const [isEditing, setIsEditing] = useState(false);
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    tools: '',
+    dislikes: '',
+    favorites: '',
+    allergies: '',
+  });
 
   const handleEditToggle = () => {
     setIsEditing((prev) => !prev);
   };
 
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/670035083a92f02d95509e62`, {
+          "method": "GET",
+        });
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
 
-  // TODO: when save is clicked, make call to API and send info to backend db
+    fetchUserInfo();
+  }, []);
+
+  const updateUserField = (field:string, value:string) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      [field]: value,
+    }));
+  };
+  
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
@@ -23,42 +48,20 @@ export default function Page() {
       <Navbar />
       <h1>Hello, Profile page!</h1>
       <div style={{ marginTop: '20px' }}>
-        <div>
-          <label>Name: </label>
-          {isEditing ? (
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
-          ) : (
-            <span>{name}</span>
-          )}
-        </div>
-        <div>
-          <label>Tools: </label>
-          {isEditing ? (
-            <input type="text" value={tools} onChange={(e) => setTools(e.target.value)} />
-          ) : (
-            <span>{tools}</span>
-          )}
-        </div>
-        <div>
-          <label>Diet Type: </label>
-          {isEditing ? (
-            <input type="text" value={dietType} onChange={(e) => setDietType(e.target.value)} />
-          ) : (
-            <span>{dietType}</span>
-          )}
-        </div>
-        <div>
-          <label>Dietary Restrictions/Dislikes: </label>
+      {Object.entries(user).map(([field, value]) => (
+        <div key={field}>
+          <label>{field.charAt(0).toUpperCase() + field.slice(1)}: </label>
           {isEditing ? (
             <input
               type="text"
-              value={dietaryRestrictions}
-              onChange={(e) => setDietaryRestrictions(e.target.value)}
+              value={value}
+              onChange={(e) => updateUserField(field, e.target.value)}
             />
           ) : (
-            <span>{dietaryRestrictions}</span>
+            <span>{value}</span>
           )}
         </div>
+      ))}
         <button onClick={handleEditToggle} style={{ marginTop: '20px' }}>
           {isEditing ? 'Save' : 'Edit'}
         </button>
