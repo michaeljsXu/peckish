@@ -26,6 +26,7 @@ export default function Page() {
     setMessages(() => [{ type: 'user', text: prompt }]);
 
     setTimeout(() => {
+      // TODO: call API/backend
       // setInterval(() => {
       console.log('Bot is responding');
       // pretend bot is answering
@@ -35,6 +36,7 @@ export default function Page() {
     }, 5000);
 
     setTimeout(() => {
+      // TODO: recieve response from API/backend
       console.log('bot responds with a recipe');
       setRecipe(mockRecipePreview);
     }, 5500);
@@ -55,7 +57,7 @@ export default function Page() {
   };
 
   const onKeyDownEvent = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && input) {
       setMessages((prevMessages) => [...prevMessages, { type: 'user', text: input }]);
       setInput('');
     }
@@ -64,35 +66,61 @@ export default function Page() {
   return (
     <>
       <div className="h-screen w-screen flex flex-row">
-        <div className="h-full w-full flex flex-col max-w-[60%] justify-end items-center">
+        <div className="h-full w-full flex flex-col max-w-[60%] justify-end items-center p-2">
           <div className="relative bottom-0 w-full overflow-y-auto">
             {/* <div className="flex flex-col justify-end"> */}
             {messages.map((message, index) => (
-              <div key={index} className="p-2">
+              <div
+                key={index}
+                className={`flex p-2 items-center ${
+                  message.type === 'bot' ? 'justify-start' : 'justify-end'
+                }`}
+              >
+                {message.type === 'bot' ? (
+                  <div className="bg-orange-300 w-6 h-6 rounded-full mr-2"></div>
+                ) : (
+                  <></>
+                )}
                 <div
-                  className={`p-2 rounded-lg ${
-                    message.type === 'bot' ? 'bg-[beige]' : 'bg-[pink]'
+                  className={`max-w-[90%] p-2 rounded-lg flex  ${
+                    message.type === 'bot' ? '' : 'bg-gray-200'
                   }`}
                 >
-                  <p>{message.text}</p>
+                  <p className="w-fit">{message.text}</p>
                 </div>
               </div>
             ))}
-            {/* Dummy div to ensure we scroll to the bottom */}
             <div ref={messagesEndRef} />
-            {/* </div> */}
           </div>
           <input
             type="text"
-            onChange={handleInputChange}
             placeholder="Type a message"
-            className="border rounded p-2 w-full"
+            className="w-full"
+            onChange={handleInputChange}
             onKeyDown={onKeyDownEvent}
             value={input}
           />
         </div>
-        <div className="h-full w-full bg-[beige] max-w-[40%]">
-          {recipe ? <RecipePreview recipe={recipe}></RecipePreview> : <></>}
+        <div className="h-full w-full bg-orange-50 max-w-[40%] flex flex-col items-center justify-center left-shadow">
+          {recipe ? (
+            <>
+              <div className="flex-1 overflow-y-auto">
+                <RecipePreview recipe={recipe}></RecipePreview>
+              </div>
+              <div className="w-full flex justify-center items-center">
+                <button className="w-fit m-2 btn-orange">Save Recipe</button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="justify-center">
+                <div
+                  className="h-9 w-9 animate-spin rounded-full border-4 border-orange-500 border-solid border-current border-e-transparent align-[-0.125em] text-primary motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status"
+                ></div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
