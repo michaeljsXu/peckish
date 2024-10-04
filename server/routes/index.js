@@ -4,6 +4,8 @@ const indexController = require('../controllers/indexController');
 
 router.get('/', indexController.home);
 
+router.get('/users', usersController.getAllUsers);
+
 // Routes for /item
 router.get('/item', indexController.getAllItems); // Get all items
 router.get('/item/:id', indexController.getItemById); // Get a specific item by ID
