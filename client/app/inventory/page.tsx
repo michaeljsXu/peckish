@@ -1,37 +1,28 @@
 'use client';
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import Navbar from '../components/navbar';
-
 import { mockItems } from '../mockData/mockData';
+import { InventoryItem } from '../models/models';
 
-// Define an interface for the table data
-interface TableRow {
-  a: string;
-  b: string;
-  c: string;
-  d: string[];
-  e: boolean;
-  f: string;
-}
 
-import { useEffect } from 'react';
 
 export default function Page() {
-  const [data, setData] = useState<TableRow[]>([]);
+  const [data, setData] = useState<InventoryItem[]>([]);
   const [editingRow, setEditingRow] = useState<number | null>(null);
+  const [newRow, setNewRow] = useState<InventoryItem | null>(null);
 
   useEffect(() => {
     // Simulate a backend call to fetch data
     const fetchData = async () => {
-      // const response = await fetch('/api/inventory'); // Replace with your actual API endpoint
-      // const result: TableRow[] = await response.json();
-      const result: TableRow[] = mockItems.map((item) => ({
-        a: item.name,
-        b: item.icon,
-        c: item.expiry,
-        d: item.tags,
-        e: item.isFrozen,
-        f: item.count,
+      // const response = await fetch('/api/InventoryItem'); // Replace with your actual API endpoint
+      // const result: InventoryItem[] = await response.json();
+      const result: InventoryItem[] = mockItems.map((item) => ({
+        name: item.name,
+        emoji: item.emoji,
+        expiry: item.expiry,
+        tags: item.tags,
+        isFrozen: item.isFrozen,
+        count: item.count,
       }));
       setData(result);
     };
@@ -46,7 +37,7 @@ export default function Page() {
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,
     rowIndex: number,
-    attribute: keyof TableRow,
+    attribute: keyof InventoryItem,
   ) => {
     const newData = [...data];
     newData[rowIndex][attribute] = e.target.value;
@@ -57,12 +48,36 @@ export default function Page() {
     setEditingRow(null);
   };
 
+  const handleAddNew = () => {
+    setNewRow({
+      name: '',
+      emoji: '',
+      expiry: '',
+      tags: [],
+      isFrozen: false,
+      count: '',
+    });
+  };
+
+  const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
+    if (newRow) {
+      setNewRow({ ...newRow, [attribute]: e.target.value });
+    }
+  };
+
+  const handleSaveNewRow = () => {
+    if (newRow) {
+      setData([...data, newRow]);
+      setNewRow(null);
+    }
+  };
+
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
     >
       <Navbar />
-      <h1>Hello, Inventory page!</h1>
+      <h1>Hello, InventoryItem page!</h1>
       <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
         <thead>
           <tr>
@@ -83,16 +98,16 @@ export default function Page() {
                   {editingRow === rowIndex ? (
                     <input
                       type="text"
-                      value={row[attribute as keyof TableRow]}
-                      onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof TableRow)}
+                      value={row[attribute as keyof InventoryItem]}
+                      onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof InventoryItem)}
                       style={{ width: '100px' }} // Adjust the width as needed
                     />
-                  ) : Array.isArray(row[attribute as keyof TableRow]) ? (
-                    row[attribute as keyof TableRow].join(', ')
-                  ) : typeof row[attribute as keyof TableRow] === 'boolean' ? (
-                    row[attribute as keyof TableRow].toString()
+                  ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
+                    row[attribute as keyof InventoryItem].join(', ')
+                  ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
+                    row[attribute as keyof InventoryItem].toString()
                   ) : (
-                    row[attribute as keyof TableRow]
+                    row[attribute as keyof InventoryItem]
                   )}
                 </td>
               ))}
@@ -105,8 +120,28 @@ export default function Page() {
               </td>
             </tr>
           ))}
+          {newRow && (
+            <tr>
+              {Object.keys(newRow).map((attribute) => (
+                <td key={attribute} style={{ textAlign: 'center', width: '16.66%' }}>
+                  <input
+                    type="text"
+                    value={newRow[attribute as keyof InventoryItem]}
+                    onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
+                    style={{ width: '100px' }} // Adjust the width as needed
+                  />
+                </td>
+              ))}
+              <td style={{ textAlign: 'center', width: '16.66%' }}>
+                <button onClick={handleSaveNewRow}>Save</button>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
+      <button onClick={handleAddNew} style={{ marginTop: '20px' }}>
+        Add New
+      </button>
     </div>
   );
 }

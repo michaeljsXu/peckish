@@ -13,3 +13,12 @@ export interface Recipe {
   prepTime: string;
   cookTime: string;
 }
+
+export interface InventoryItem {
+  name: string;
+  emoji: string;
+  expiry: string;
+  tags: string[];
+  isFrozen: boolean;
+  count: string;
+}
