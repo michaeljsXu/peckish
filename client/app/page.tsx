@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Navbar from './components/navbar';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default function Home() {
   const [userInput, setUserInput] = useState('');

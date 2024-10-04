@@ -12,15 +12,14 @@ const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       <div className="relative w-full h-full top-0 flex flex-col">
         <h1>{recipe.name}</h1>
         <div className="flex flex-row justify-between items-center mb-4">
-          {recipe.prepTime ? <p>Prep Time: {recipe.prepTime}</p> : <></>}
-          {recipe.cookTime ? <p>Cook Time: {recipe.cookTime}</p> : <></>}
+          {recipe.time ? <p>Prep Time: {recipe.time}</p> : <></>}
         </div>
         <img
           className="w-full h-auto mb-4"
-          src={recipe.img.startsWith('data:') ? recipe.img : `/path/to/images/${recipe.img}`}
+          src={recipe.picture.startsWith('data:') ? recipe.picture : `/path/to/images/${recipe.picture}`}
           alt={recipe.name}
         />
-        <p className="mb-4">{recipe.description}</p>
+        <p className="mb-4">{recipe.desc}</p>
         <div className="mb-4">
           <h2>Ingredients</h2>
           <ul>

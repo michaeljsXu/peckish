@@ -43,11 +43,10 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     <>
       <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white" onClick={onRecipeClick}>
         <div className="relative h-48">
-          <Image
-            src={recipe.img.startsWith('data:') ? recipe.img : `/path/to/images/${recipe.img}`}
+          <img
+            className="h-full w-full object-cover"
+            src={recipe.picture.startsWith('data:') || recipe.picture.startsWith('http') ? recipe.picture : `/path/to/images/${recipe.picture}`}
             alt={recipe.name}
-            layout="fill"
-            objectFit="cover"
           />
         </div>
         <div className="px-6 py-4">
@@ -57,7 +56,7 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
               Prepared!
             </button>
           </div>
-          <p className="text-gray-700">{recipe.description}</p>
+          <p className="text-gray-700">{recipe.desc}</p>
         </div>
       </div>
 
