@@ -1,4 +1,5 @@
 const Item = require('../models/itemModel');
+const SeenItem = require('../models/seenItemModel');
 
 exports.getAllItems = async (req, res) => {
     try {
@@ -11,14 +12,34 @@ exports.getAllItems = async (req, res) => {
   
   exports.createItem = async (req, res) => {
     try {
+      const { name, icon, expiry, tags, isFrozen, count } = req.body;
+  
+      // Check if the item name already exists in the SeenItem model
+      const seenItem = await SeenItem.findOne({ name });
+  
+      if (!seenItem) {
+        // If the item name doesn't exist, add it to the SeenItem model
+        const newSeenItem = new SeenItem({
+          name,
+          icon,
+          expiry,
+          tags,
+          isFrozen
+        });
+  
+        await newSeenItem.save();
+      }
+  
+      // Create a new item
       const newItem = new Item(req.body);
       await newItem.save();
       res.status(201).json(newItem);
     } catch (error) {
+      console.log(error);
       res.status(400).json({ error: "Failed to create item" });
     }
   };
-  
+
   exports.updateItemById = async (req, res) => {
     try {
       const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, {
