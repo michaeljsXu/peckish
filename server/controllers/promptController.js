@@ -17,7 +17,7 @@ exports.promptMessage = async (req, res) => {
 exports.promptItem = async (req, res) => {
     try {
       const prompt = req.body.prompt;
-      const result = await ingredientAgent(prompt);
+      let result = {};
   
       // Check if the item name already exists in the SeenItem model
       const seenItem = await SeenItem.findOne({ name: result.name });
@@ -28,6 +28,8 @@ exports.promptItem = async (req, res) => {
         result.expiry = seenItem.expiry;
         result.tags = seenItem.tags;
         result.isFrozen = seenItem.isFrozen;
+      } else {
+        result = await ingredientAgent(prompt);
       }
   
       res.status(200).json({ result });
