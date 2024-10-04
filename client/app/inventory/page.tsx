@@ -4,9 +4,8 @@ import Navbar from '../components/navbar';
 import { mockItems } from '../mockData/mockData';
 import { InventoryItem, categories } from '../models/models';
 import React from 'react';
-// Define an interface for the table data
 
-
+// TODO: anytime when save is clicked, make call to API and send info to backend db
 export default function Page() {
   const [data, setData] = useState<InventoryItem[]>([]);
   const [editingRow, setEditingRow] = useState<number | null>(null);

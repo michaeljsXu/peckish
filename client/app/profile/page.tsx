@@ -8,17 +8,14 @@ export default function Page() {
   const [tools, setTools] = useState('oven, microwave, stove');
   const [dietType, setDietType] = useState('Vegetarian');
   const [dietaryRestrictions, setDietaryRestrictions] = useState('nuts, dairy');
-  const [isEditing, setIsEditing] = useState({
-    name: false,
-    tools: false,
-    dietType: false,
-    dietaryRestrictions: false,
-  });
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleEditToggle = (section: keyof typeof isEditing) => {
-    setIsEditing((prev) => ({ ...prev, [section]: !prev[section] }));
+  const handleEditToggle = () => {
+    setIsEditing((prev) => !prev);
   };
 
+
+  // TODO: when save is clicked, make call to API and send info to backend db
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
@@ -28,40 +25,31 @@ export default function Page() {
       <div style={{ marginTop: '20px' }}>
         <div>
           <label>Name: </label>
-          {isEditing.name ? (
+          {isEditing ? (
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
           ) : (
             <span>{name}</span>
           )}
-          <button onClick={() => handleEditToggle('name')} style={{ marginLeft: '100px' }}>
-            {isEditing.name ? 'Save' : 'Edit'}
-          </button>
         </div>
         <div>
           <label>Tools: </label>
-          {isEditing.tools ? (
+          {isEditing ? (
             <input type="text" value={tools} onChange={(e) => setTools(e.target.value)} />
           ) : (
             <span>{tools}</span>
           )}
-          <button onClick={() => handleEditToggle('tools')} style={{ marginLeft: '100px' }}>
-            {isEditing.tools ? 'Save' : 'Edit'}
-          </button>
         </div>
         <div>
           <label>Diet Type: </label>
-          {isEditing.dietType ? (
+          {isEditing ? (
             <input type="text" value={dietType} onChange={(e) => setDietType(e.target.value)} />
           ) : (
             <span>{dietType}</span>
           )}
-          <button onClick={() => handleEditToggle('dietType')} style={{ marginLeft: '100px' }}>
-            {isEditing.dietType ? 'Save' : 'Edit'}
-          </button>
         </div>
         <div>
           <label>Dietary Restrictions/Dislikes: </label>
-          {isEditing.dietaryRestrictions ? (
+          {isEditing ? (
             <input
               type="text"
               value={dietaryRestrictions}
@@ -70,13 +58,10 @@ export default function Page() {
           ) : (
             <span>{dietaryRestrictions}</span>
           )}
-          <button
-            onClick={() => handleEditToggle('dietaryRestrictions')}
-            style={{ marginLeft: '100px' }}
-          >
-            {isEditing.dietaryRestrictions ? 'Save' : 'Edit'}
-          </button>
         </div>
+        <button onClick={handleEditToggle} style={{ marginTop: '20px' }}>
+          {isEditing ? 'Save' : 'Edit'}
+        </button>
       </div>
     </div>
   );
