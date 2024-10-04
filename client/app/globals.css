@@ -38,7 +38,7 @@ h2 {
 
 p,
 li {
-  @apply text-sm;
+  @apply text-sm text-gray-700;
 }
 
 ul {
