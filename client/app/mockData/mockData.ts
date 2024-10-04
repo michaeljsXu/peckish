@@ -65,15 +65,15 @@ export const mockItems: InventoryItem[] = [
   {
     name: 'Milk',
     emoji: '🥛',
-    expiry: '2023-12-31T23:59:59.000Z',
-    tags: ['dairy', 'beverage'],
+    expiry: '2023-12-31',
+    tags: ['Dairy', 'Beverages'],
     count: '1 gallon',
   },
   {
-    name: 'Eggs',
-    emoji: '🥚',
-    expiry: '2023-12-31T23:59:59.000Z',
-    tags: ['dairy', 'protein'],
+    name: 'Cookies',
+    emoji: '🍪',
+    expiry: '2023-12-31',
+    tags: ['Baked Goods', 'Sweets'],
     count: '1 dozen',
   },
 ];
