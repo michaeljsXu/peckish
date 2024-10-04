@@ -57,10 +57,8 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         <RecipePreview recipe={recipe}></RecipePreview>
       </Dialog>
 
-      <Dialog isOpen={openMadeRecipe} onClose={closeMadeRecipeDialog}>
-        {/* <div>TESTING</div> */}
-        {/* <InventoryDeletions></InventoryDeletions> */}
-      </Dialog>
+      {/* <Dialog isOpen={openMadeRecipe} onClose={closeMadeRecipeDialog}>
+      </Dialog> */}
     </>
   );
 };
