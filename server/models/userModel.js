@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   email: { type: String, required: true },
+  preferences: { type: String, required: false },
   favourites: { type: String, required: false },
   dislikes: { type: String, required: false },
   tools: { type: String, required: false },
