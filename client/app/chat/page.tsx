@@ -2,11 +2,11 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import RecipeCard from '../components/recipeCard';
-import Navbar from '../components/navbar';
 import { Message, Recipe } from '../models/models';
-import RecipePreview from '../components/recipePreview';
 import { mockRecipePreview } from '../mockData/mockData';
+
+import Navbar from '../components/navbar';
+import RecipePreview from '../components/recipePreview';
 
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -14,7 +14,6 @@ export default function Page() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
-  // const [replies, setReplies] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
 
@@ -28,10 +27,10 @@ export default function Page() {
 
     setTimeout(() => {
       // setInterval(() => {
-        console.log('Bot is responding');
-        // pretend bot is answering
-        const reply = 'chirp chirp';
-        setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: reply }]);
+      console.log('Bot is responding');
+      // pretend bot is answering
+      const reply = 'chirp chirp';
+      setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: reply }]);
       // }, 10_000);
     }, 5000);
 
