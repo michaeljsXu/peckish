@@ -1,4 +1,23 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
 export default function Page() {
+  const [messages, setMessages] = useState<string[]>([]);
+  const [replies, setReplies] = useState<string[]>([]);
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    console.log('Initial prompt', messages);
+    const prompt: string =
+      searchParams.get('prompt') ||
+      "A step-by-step recipe for a flavorful dish that's both easy to make and perfect for a weeknight dinner?";
+    console.log(prompt)
+      setMessages((prevMessges) => [...prevMessges, prompt]);
+  }, []);
+
   return (
     <>
       <div className="h-screen w-screen flex flex-row">
