@@ -133,7 +133,7 @@ export default function Page() {
               {Object.keys(newRow).map((attribute) => (
                 <td key={attribute} style={{ textAlign: 'center', width: '16.66%' }}>
                   <input
-                    type="text"
+                    type={attribute === 'expiry' ? 'date' : 'text'}
                     value={newRow[attribute as keyof InventoryItem]}
                     onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
                     style={{ width: '100px' }} // Adjust the width as needed
