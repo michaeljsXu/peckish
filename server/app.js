@@ -1,12 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+
 dotenv.config();
 const app = express();
 const indexRouter = require('./routes/index');
 
 // Middleware
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data
+
+// static
+app.use(express.static('public'));
 
 // Connect to MongoDB
 const mongoURL = process.env.MONGO_URL;
