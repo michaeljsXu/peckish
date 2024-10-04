@@ -3,19 +3,15 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import RecipeCard from '../components/recipeCard';
-
-interface Message {
-  type: 'user' | 'bot';
-  text: string;
-}
-
 import Navbar from '../components/navbar';
+import { Message, Recipe } from '../models/models';
 
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
+  const [recipe, setRecipe] = useState<Recipe | null>(null)
   // const [replies, setReplies] = useState<string[]>([]);
 
   const searchParams = useSearchParams();
@@ -90,7 +86,7 @@ export default function Page() {
           />
         </div>
         <div className="h-full w-full bg-[beige] max-w-[40%]">
-          {/* <RecipeCard></RecipeCard> */}
+          <RecipeCard recipe={recipe}></RecipeCard>
         </div>
       </div>
     </>
