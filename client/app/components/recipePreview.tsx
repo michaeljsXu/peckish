@@ -9,14 +9,11 @@ const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
   return (
     <div className="h-full w-full flex flex-col justify-between p-4">
-      <div
-        className="relative w-full top-0 flex flex-col overflow-y-auto"
-        style={{ height: 'calc(100% - 20px)' }}
-      >
-        <h1 className="text-2xl font-bold mb-2">{recipe.name}</h1>
+      <div className="relative w-full h-full top-0 flex flex-col">
+        <h1>{recipe.name}</h1>
         <div className="flex flex-row justify-between items-center mb-4">
-          {recipe.prepTime ? <p className="text-sm">Prep Time: {recipe.prepTime}</p> : <></>}
-          {recipe.cookTime ? <p className="text-sm">Cook Time: {recipe.cookTime}</p> : <></>}
+          {recipe.prepTime ? <p>Prep Time: {recipe.prepTime}</p> : <></>}
+          {recipe.cookTime ? <p>Cook Time: {recipe.cookTime}</p> : <></>}
         </div>
         <img
           className="w-full h-auto mb-4"
@@ -25,42 +22,38 @@ const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         />
         <p className="mb-4">{recipe.description}</p>
         <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-2">Ingredients</h2>
-          <ul className="list-disc list-inside">
+          <h2>Ingredients</h2>
+          <ul>
             {recipe.ingredients.map((ingredient, index) => (
-              <li key={index} className="text-sm">
-                {ingredient}
-              </li>
+              <li key={index}>{ingredient}</li>
             ))}
           </ul>
         </div>
         <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-2">Tools</h2>
-          <ul className="list-disc list-inside">
+          <h2>Tools</h2>
+          <ul>
             {recipe.tools.map((tool, index) => (
-              <li key={index} className="text-sm">
-                {tool}
-              </li>
+              <li key={index}>{tool}</li>
             ))}
           </ul>
         </div>
         <div>
-          <h2 className="text-xl font-semibold mb-2">Steps</h2>
-          <ol className="list-decimal list-inside">
+          <h2>Steps</h2>
+          <ol>
             {recipe.steps.map((step, index) => (
-              <li key={index} className="text-sm mb-1">
+              <li key={index} className="mb-1">
                 {step}
               </li>
             ))}
           </ol>
         </div>
       </div>
-      <button
+      {/* <button
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
         onClick={onSave}
       >
         Save
-      </button>
+      </button> */}
     </div>
   );
 };
