@@ -15,8 +15,8 @@ const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       >
         <h1 className="text-2xl font-bold mb-2">{recipe.name}</h1>
         <div className="flex flex-row justify-between items-center mb-4">
-          <p className="text-sm">Prep Time: {recipe.prepTime}</p>
-          <p className="text-sm">Cook Time: {recipe.cookTime}</p>
+          {recipe.prepTime ? <p className="text-sm">Prep Time: {recipe.prepTime}</p> : <></>}
+          {recipe.cookTime ? <p className="text-sm">Cook Time: {recipe.cookTime}</p> : <></>}
         </div>
         <img
           className="w-full h-auto mb-4"

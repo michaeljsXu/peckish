@@ -10,8 +10,8 @@ export interface Recipe {
   ingredients: string[];
   steps: string[];
   tools: string[];
-  prepTime: string;
-  cookTime: string;
+  prepTime?: string;
+  cookTime?: string;
 }
 
 export interface InventoryItem {
