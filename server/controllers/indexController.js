@@ -1,4 +1,5 @@
-const Item = require("../models/Item");
+const Item = require("../models/itemModel");
+const Recipe = require("../models/recipesModel");
 
 exports.home = (req, res) => {
   res.send("Hello World");
