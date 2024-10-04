@@ -1,10 +1,11 @@
 const ingredientAgent = require('../openai/ingredientAgent');
 const recipeAgent = require('../openai/recipeAgent');
+const imageAgent = require('../openai/imageAgent');
 
 // Controller function to handle output from chatbot to the user
 exports.promptMessage = async (req, res) => {
   try {
-    console.log(req.body);
+    //console.log(req.body);
     const result = await recipeAgent.agent(req.body.prompt, req.body.useAvailable);
     res.status(200).json({ result });
   } catch (err) {
@@ -14,10 +15,19 @@ exports.promptMessage = async (req, res) => {
 
 exports.promptItem = async (req, res) => {
     try {
-      console.log(req.params.item);
+      //console.log(req.params.item);
       const result = await ingredientAgent.agent(req.params.item);
       res.status(200).json({ result });
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
   };
+
+exports.promptImage = async (req, res) => {
+    try {
+      const result = await imageAgent.generateRecipeImage(req.body.desc);
+      res.status(200).json({ result });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  }

@@ -1,5 +1,4 @@
 require('dotenv').config();
-require('dotenv').config();
 const OpenAI = require('openai');
  
 const openai = new OpenAI({
@@ -17,7 +16,6 @@ const messages = [
   "tags": [
     "tag1, such as meat/vegetable", "tag2", "tag3
   ],
-  "frozen": "a bool estimating if the item is usually frozen ",
   "count": "a typical amount the user might buy"
 }`,
   },
@@ -33,5 +31,5 @@ exports.agent = async (userInput) => {
     messages: messages,
   });
   console.log(response);
-  return response;
+  return response.choices[0].message.content;
 }
