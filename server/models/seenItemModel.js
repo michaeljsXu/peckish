@@ -1,4 +1,3 @@
-// models/seenItemModel.js
 const mongoose = require('mongoose');
 
 const seenItemSchema = new mongoose.Schema({

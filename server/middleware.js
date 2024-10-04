@@ -1,4 +1,4 @@
-const Item = require('models/itemModel'); // Adjust the path as necessary
+const Item = require('./models/itemModel'); // Adjust the path as necessary
 
 const checkAndDeleteExpiredItems = async (req, res, next) => {
   try {
