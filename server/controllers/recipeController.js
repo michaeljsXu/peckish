@@ -9,7 +9,7 @@ exports.getAllRecipes = async (req, res) => {
   }
 };
 
-exports.getRecipe = async (req, res) => {
+exports.getRecipeById = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
     if (!recipe) {
@@ -31,7 +31,7 @@ exports.createRecipe = async (req, res) => {
   }
 };
 
-exports.updateRecipe = async (req, res) => {
+exports.updateRecipeById = async (req, res) => {
   try {
     const updatedRecipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -45,7 +45,7 @@ exports.updateRecipe = async (req, res) => {
   }
 };
 
-exports.deleteRecipe = async (req, res) => {
+exports.deleteRecipeById = async (req, res) => {
   try {
     const result = await Recipe.findByIdAndDelete(req.params.id);
     if (!result) {
