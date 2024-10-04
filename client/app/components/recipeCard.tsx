@@ -41,6 +41,7 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
           <div>
             <div className="font-bold text-xl mb-2">{recipe.name}</div>
             <button
+              disabled={true}
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               onClick={onMadeRecipe}
             >
@@ -57,7 +58,8 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       </Dialog>
 
       <Dialog isOpen={openMadeRecipe} onClose={closeMadeRecipeDialog}>
-        <div>TESTING</div>
+        {/* <div>TESTING</div> */}
+        {/* <InventoryDeletions></InventoryDeletions> */}
       </Dialog>
     </>
   );
