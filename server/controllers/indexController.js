@@ -59,7 +59,9 @@ exports.getItemById = async (req, res) => {
     res.status(200).json(item);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch item" });
-    
+  }
+}
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await Users.find();
