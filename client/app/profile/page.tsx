@@ -25,6 +25,7 @@ export default function Page() {
           "method": "GET",
         });
         const data = await response.json();
+        delete data._id;
         setUser(data);
       } catch (error) {
         console.error('Error fetching user info:', error);
