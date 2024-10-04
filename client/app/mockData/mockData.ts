@@ -1,4 +1,4 @@
-import { Recipe } from '../models/models';
+import { Recipe, InventoryItem } from '../models/models';
 
 export const mockRecipes: Recipe[] = [
   {
@@ -60,3 +60,22 @@ export const mockRecipes: Recipe[] = [
 ];
 
 export const mockRecipePreview = mockRecipes[0];
+
+export const mockItems: InventoryItem[] = [
+  {
+    name: 'Milk',
+    emoji: '🥛',
+    expiry: '2023-12-31T23:59:59.000Z',
+    tags: ['dairy', 'beverage'],
+    isFrozen: false,
+    count: '1 gallon',
+  },
+  {
+    name: 'Eggs',
+    emoji: '🥚',
+    expiry: '2023-12-31T23:59:59.000Z',
+    tags: ['dairy', 'protein'],
+    isFrozen: false,
+    count: '1 dozen',
+  },
+];
