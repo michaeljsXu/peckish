@@ -30,15 +30,20 @@ export default function Home() {
         <h1 className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           Welcome to our app
         </h1>
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="border p-2"
-          placeholder="Type your message here..."
-        />
-        <button onClick={handleButtonClick} className="mt-4 p-2 bg-blue-500 text-white rounded">
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="border p-2"
+            placeholder="Type your message here..."
+          />
+          <button onClick={() => console.log('User input on Enter:', userInput)} className="btn-orange">
+            Enter
+          </button>
+        </div>
+        <button onClick={handleButtonClick} className="btn-orange">
           I&apos;m feeling peckish
         </button>
       </main>
