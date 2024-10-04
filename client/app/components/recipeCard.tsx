@@ -3,17 +3,30 @@ import React, { useState } from 'react';
 import { Recipe } from '../models/models';
 import Dialog from './dialog';
 import RecipePreview from './recipePreview';
+import Snackbar from './snackbar';
 
 const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   // const [madeRecipe, setMadeRecipe] = useState<boolean>(false);
   const [openRecipe, setOpenRecipe] = useState<boolean>(false);
   const [openMadeRecipe, setOpenMadeRecipe] = useState<boolean>(false);
 
+  const [snackbarVisible, setSnackbarVisible] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+
   const onMadeRecipe = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation(); // prevent the card from opening after button click
     console.log('Made Recipe! Removing certain items from inventory');
 
     setOpenMadeRecipe(true);
+    setSnackbarVisible(true);
+    setSnackbarMessage('Recipe prepared! 😋');
+
+    // if (dismissCallback) {
+    setTimeout(() => {
+      setSnackbarVisible(false);
+      setSnackbarMessage('');
+    }, 3000);
+
     // TODO: open items to be deleted from database
   };
   const closeMadeRecipeDialog = () => setOpenMadeRecipe(false);
@@ -38,18 +51,13 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
           />
         </div>
         <div className="px-6 py-4">
-          <div>
-            <div className="font-bold text-xl mb-2">{recipe.name}</div>
-            <button
-              disabled={true}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={onMadeRecipe}
-            >
-              Made Recipe
+          <div className="flex flex-row justify-between items-center mb-2">
+            <h2 className="mb-0">{recipe.name}</h2>
+            <button className="btn-orange whitespace-nowrap" onClick={onMadeRecipe}>
+              Prepared!
             </button>
           </div>
-
-          <p className="text-gray-700 text-base">{recipe.description}</p>
+          <p className="text-gray-700">{recipe.description}</p>
         </div>
       </div>
 
@@ -57,8 +65,7 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         <RecipePreview recipe={recipe}></RecipePreview>
       </Dialog>
 
-      {/* <Dialog isOpen={openMadeRecipe} onClose={closeMadeRecipeDialog}>
-      </Dialog> */}
+      <Snackbar message={snackbarMessage} visible={snackbarVisible} />
     </>
   );
 };
