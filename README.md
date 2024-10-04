@@ -8,3 +8,16 @@
 # install Node LTS release
 npm install 20.18.0 
 ```
+
+### Frontend
+```
+# install pnpm
+npm install -g pnpm
+
+# install dependencies
+cd client
+pnpm install
+
+# run the frontend
+pnpm run dev
+```
