@@ -6,7 +6,7 @@ export default function Page() {
       style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
     >
       <Navbar />
-      <h1>Hello, Inventory page!</h1>
+      <h1>Hello, Recipe page!</h1>
     </div>
   );
 }

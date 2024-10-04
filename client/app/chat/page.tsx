@@ -9,6 +9,8 @@ interface Message {
   text: string;
 }
 
+import Navbar from '../components/navbar';
+
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -88,9 +90,10 @@ export default function Page() {
           />
         </div>
         <div className="h-full w-full bg-[beige] max-w-[40%]">
-          <RecipeCard></RecipeCard>
+          {/* <RecipeCard></RecipeCard> */}
         </div>
       </div>
     </>
   );
 }
+
