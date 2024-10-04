@@ -19,6 +19,21 @@ export interface InventoryItem {
   emoji: string;
   expiry: string;
   tags: string[];
-  isFrozen: boolean;
   count: string;
 }
+
+export const categories = [
+  'fruit',
+  'vegetable',
+  'meat',
+  'dairy',
+  'grains',
+  'seafood',
+  'nuts-and-seeds',
+  'legumes',
+  'beverages',
+  'sweets',
+  'spices-and-herbs',
+  'oils-and-fats',
+  'baked-goods',
+];

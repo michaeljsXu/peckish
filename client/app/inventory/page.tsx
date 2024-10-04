@@ -2,7 +2,7 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import { mockItems } from '../mockData/mockData';
-import { InventoryItem } from '../models/models';
+import { InventoryItem, categories } from '../models/models';
 // Define an interface for the table data
 
 
@@ -19,7 +19,6 @@ export default function Page() {
         emoji: item.emoji,
         expiry: item.expiry,
         tags: item.tags,
-        isFrozen: item.isFrozen,
         count: item.count,
       }));
       setData(result);
@@ -52,7 +51,6 @@ export default function Page() {
       emoji: '',
       expiry: '',
       tags: [],
-      isFrozen: false,
       count: '',
     });
   };
@@ -84,20 +82,19 @@ export default function Page() {
       <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
         <thead>
           <tr>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Name</th>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Emoji</th>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Expiry Date</th>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Category</th>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Frozen?</th>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Count</th>
-            <th style={{ textAlign: 'center', width: '16.66%' }}>Actions</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Name</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Emoji</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Expiry Date</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Category</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Count</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
               {Object.keys(row).map((attribute) => (
-                <td key={attribute} style={{ textAlign: 'center', width: '16.66%' }}>
+                <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
                   {editingRow === rowIndex ? (
                     <input
                       type="text"
@@ -114,7 +111,7 @@ export default function Page() {
                   )}
                 </td>
               ))}
-              <td style={{ textAlign: 'center', width: '16.66%' }}>
+              <td style={{ textAlign: 'center', width: '20%' }}>
                 {editingRow === rowIndex ? (
                   <button onClick={handleSave}>Save</button>
                 ) : (
@@ -131,16 +128,37 @@ export default function Page() {
           {newRow && (
             <tr>
               {Object.keys(newRow).map((attribute) => (
-                <td key={attribute} style={{ textAlign: 'center', width: '16.66%' }}>
-                  <input
-                    type={attribute === 'expiry' ? 'date' : 'text'}
-                    value={newRow[attribute as keyof InventoryItem]}
-                    onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
-                    style={{ width: '100px' }} // Adjust the width as needed
-                  />
+                <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
+                  {attribute === 'tags' ? (
+                    <select
+                      value={newRow[attribute as keyof InventoryItem]}
+                      onChange={(e) => handleNewRowChange(e as unknown as ChangeEvent<HTMLInputElement>, attribute as keyof InventoryItem)}
+                      style={{ width: '100px' }} // Adjust the width as needed
+                    >
+
+
+                      $SELECTION_PLACEHOLDER$ = (
+                      <>
+                        {categories.map((category) => (
+                          <option key={category} value={category}>
+                            {category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ')}
+                          </option>
+                        ))}
+                      </>
+                      );
+
+                    </select>
+                  ) : (
+                    <input
+                      type={attribute === 'expiry' ? 'date' : 'text'}
+                      value={newRow[attribute as keyof InventoryItem]}
+                      onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
+                      style={{ width: '100px' }} // Adjust the width as needed
+                    />
+                  )}
                 </td>
               ))}
-              <td style={{ textAlign: 'center', width: '16.66%' }}>
+              <td style={{ textAlign: 'center', width: '20%' }}>
                 <button onClick={handleSaveNewRow}>Save</button>
               </td>
             </tr>
