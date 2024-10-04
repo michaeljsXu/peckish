@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
+import RecipeCard from '../components/recipeCard';
 
 interface Message {
   type: 'user' | 'bot';
@@ -86,7 +87,9 @@ export default function Page() {
             value={input}
           />
         </div>
-        <div className="h-full w-full bg-[beige] max-w-[40%]"></div>
+        <div className="h-full w-full bg-[beige] max-w-[40%]">
+          <RecipeCard></RecipeCard>
+        </div>
       </div>
     </>
   );
