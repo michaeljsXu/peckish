@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const promptController = require('../controllers/promptController');
 
-// Route to handle output from chatbot to user
-router.get('/prompt', promptController.userIn);
+// Route to handle user message input to the chatbot
+router.post('/message', promptController.promptMessage);
 
-// Route to handle prompt to chatbot from user
-router.post('/prompt', promptController.userOut);
+// Route to handle new item being created and get chatbot to create attributes for it
+router.post('/newitem', promptController.promptNewItem);
 
 module.exports = router;
