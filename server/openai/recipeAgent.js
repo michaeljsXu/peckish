@@ -13,7 +13,7 @@ const messages = [
 {
     "message": "message for the user",
     "recipe": {
-      "recipeName": "name goes here",
+      "name": "name goes here",
       "desc": "brief description",
       "ingredients": [
         "ingredient1", "ingredient2"
