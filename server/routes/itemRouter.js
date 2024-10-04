@@ -1,0 +1,15 @@
+const express = require('express');
+const router = express.Router();
+const itemController = require('../controllers/itemController');
+const checkAndDeleteExpiredItems = require('../middleware'); // Adjust the path as necessary
+
+// Checks on database to be run before other routes
+router.use(checkAndDeleteExpiredItems);
+
+router.get('/', itemController.getAllItems);
+router.get('/:id', itemController.getItemById);
+router.post('/', itemController.createItem);
+router.put('/:id', itemController.updateItemById);
+router.delete('/:id', itemController.deleteItemById);
+
+module.exports = router;
