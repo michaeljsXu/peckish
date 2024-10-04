@@ -1,5 +1,6 @@
 require('dotenv').config();
 const userContext = require('../common/userContext');
+const itemContext = require('../common/itemContext');
 const OpenAI = require('openai');
 
 const openai = new OpenAI({
@@ -32,17 +33,35 @@ const messages = [
   },
 ];
 
-exports.agent = async (userInput) => {
+exports.agent = async (userInput, useAvailable) => {
   messages.push(
     {
       role: "system",
-      content: userContext(),
+      content: "Here are the context about the user:\n"+userContext(),
     }
   )
+  messages.push(
+    {
+      role: "system",
+      content: "Here are the user's items available:\n"+itemContext(),
+    }
+  )
+  let isAvailbleString = "Only use ingredients available to the user. ";
+  if (!useAvailable) {
+    isAvailbleString = "You may use ingredients not available to the user as long as some of the user's ingredients will be used. ";
+  }
+  isAvailbleString += "Common ingredients such as salt/pepper/oil are always available.";
+  messages.push({
+    role: "system",
+    content: isAvailbleString,
+  })
   messages.push({
     role: "user",
     content: userInput,
   });
+
+  console.log(messages);
+  return;
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: messages,
