@@ -59,5 +59,22 @@ exports.getItemById = async (req, res) => {
     res.status(200).json(item);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch item" });
+    
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await Users.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch all users" });
+  }
+};
+
+exports.createUser = async (req, res) => {
+  try {
+    const newUser = new Item(req.body);
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ error: "Failed to create user" });
   }
 };
