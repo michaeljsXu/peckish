@@ -1,15 +1,17 @@
 require('dotenv').config();
-import OpenAI from "openai";
-import userContext from "../common/userContext"
- 
+const userContext = require('../common/userContext');
+const OpenAI = require('openai');
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+ 
+
 
 const messages = [
   {
     role: "system",
-    content: `You are a helpful recipe assistant. You can create recipes based on the user's profile and inventory. Respond with a JSON object in the following format, note that recipe can be empty if the user is asking for suggestions, IE you do not have to generate a recipe every time.
+    content: `You are a helpful recipe assistant. You can create recipes based on the user's profile and inventory. Respond with a JSON object in the following format, note that recipe can be empty if the user is asking for suggestions, IE you do not have to generate a recipe every time. Your response must only include a valid JSON.
 {
     "message": "message for the user",
     "recipe": {
@@ -30,7 +32,7 @@ const messages = [
   },
 ];
 
-export default async function agent(userInput) {
+exports.recipeAgent = async (userInput) => {
   messages.push(
     {
       role: "system",

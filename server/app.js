@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-import agent from "./openai/recipeAgent";
 
 dotenv.config();
 const app = express();
@@ -23,10 +22,6 @@ mongoose.connect(mongoURL)
 
 // Routes
 app.use('/', indexRouter);
-
-agent("I want to make a cake").then((response) => {
-  console.log(response);
-});
 
 // Start the server
 const port = 3000;
