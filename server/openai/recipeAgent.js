@@ -32,7 +32,7 @@ const messages = [
   },
 ];
 
-exports.recipeAgent = async (userInput) => {
+exports.agent = async (userInput) => {
   messages.push(
     {
       role: "system",

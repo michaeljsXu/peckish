@@ -6,6 +6,6 @@ const promptController = require('../controllers/promptController');
 router.post('/message', promptController.promptMessage);
 
 // Route to handle new item being created and get chatbot to create attributes for it
-router.post('/newitem', promptController.promptNewItem);
+router.post('/:item', promptController.promptItem);
 
 module.exports = router;

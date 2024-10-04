@@ -5,17 +5,17 @@ const recipeAgent = require('../openai/recipeAgent');
 exports.promptMessage = async (req, res) => {
   try {
     const prompt = req.body.prompt;
-    const result = recipeAgent(prompt);
+    const result = await recipeAgent.agent(prompt);
     res.status(200).json({ result });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-exports.promptNewItem = async (req, res) => {
+exports.promptItem = async (req, res) => {
     try {
-      const prompt = req.body.prompt;
-      const result = ingredientAgent(prompt);
+      console.log(req.params.item);
+      const result = await ingredientAgent.agent(req.params.item);
       res.status(200).json({ result });
     } catch (err) {
       res.status(500).json({ message: err.message });

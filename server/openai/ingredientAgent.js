@@ -23,7 +23,7 @@ const messages = [
   },
 ];
 
-exports.ingredientAgent = async (userInput) => {
+exports.agent = async (userInput) => {
   messages.push({
     role: "user",
     content: userInput,
