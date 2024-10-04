@@ -5,8 +5,8 @@ const indexController = require('../controllers/indexController');
 router.get('/', indexController.home);
 
 // Routes for /users
-router.get('/users', usersController.getAllUsers);
-router.post('/users', usersController.createUser);
+router.get('/users', indexController.getAllUsers);
+router.post('/users', indexController.createUser);
 
 // Routes for /item
 router.get('/item', indexController.getAllItems); // Get all items

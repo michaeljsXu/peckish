@@ -6,11 +6,11 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   email: { type: String, required: true },
-  favourites: { type: String, required: true },
-  dislikes: { type: String, required: true },
-  tools: { type: String, required: true },
-  allergies: { type: String, required: true },
-  diet: { type: String, required: true },
+  favourites: { type: String, required: false },
+  dislikes: { type: String, required: false },
+  tools: { type: String, required: false },
+  allergies: { type: String, required: false },
+  diet: { type: String, required: false },
 });
 
 const User = mongoose.model("User", userSchema);

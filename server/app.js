@@ -22,7 +22,6 @@ mongoose.connect(mongoURL)
 
 // Routes
 app.use('/', indexRouter);
-app.use('/api', usersRoutes);
 
 // Start the server
 const port = 3000;
