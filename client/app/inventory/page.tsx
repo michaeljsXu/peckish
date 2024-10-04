@@ -3,7 +3,7 @@ import { useState, ChangeEvent, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import { mockItems } from '../mockData/mockData';
 import { InventoryItem } from '../models/models';
-
+// Define an interface for the table data
 
 
 export default function Page() {
@@ -14,8 +14,6 @@ export default function Page() {
   useEffect(() => {
     // Simulate a backend call to fetch data
     const fetchData = async () => {
-      // const response = await fetch('/api/InventoryItem'); // Replace with your actual API endpoint
-      // const result: InventoryItem[] = await response.json();
       const result: InventoryItem[] = mockItems.map((item) => ({
         name: item.name,
         emoji: item.emoji,
@@ -72,6 +70,11 @@ export default function Page() {
     }
   };
 
+  const handleDelete = (rowIndex: number) => {
+    const newData = data.filter((_, index) => index !== rowIndex);
+    setData(newData);
+  };
+
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
@@ -115,7 +118,12 @@ export default function Page() {
                 {editingRow === rowIndex ? (
                   <button onClick={handleSave}>Save</button>
                 ) : (
-                  <button onClick={() => handleEditToggle(rowIndex)}>Edit</button>
+                  <>
+                    <button onClick={() => handleEditToggle(rowIndex)}>Edit</button>
+                    <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
+                      Delete
+                    </button>
+                  </>
                 )}
               </td>
             </tr>
