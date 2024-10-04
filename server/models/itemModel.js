@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   icon: {
     type: String,
@@ -11,22 +11,22 @@ const itemSchema = new mongoose.Schema({
   },
   expiry: {
     type: Date,
-    required: true
+    required: true,
   },
   tags: {
     type: [String],
-    required: true
+    required: true,
   },
   isFrozen: {
     type: Boolean,
-    required: true
+    required: true,
   },
   count: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
-const Item = mongoose.model('Item', itemSchema);
+const Item = mongoose.model("Item", itemSchema);
 
 module.exports = Item;
