@@ -1,24 +1,33 @@
 'use client';
-import { useState, ChangeEvent, useEffect } from 'react';
+import { useState, ChangeEvent, useEffect, useRef } from 'react';
 import Navbar from '../components/navbar';
 import { InventoryItem } from '../models/models';
 import React from 'react';
 
-// TODO: anytime when save is clicked, make call to API and send info to backend
 export default function Page() {
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+   
+    // Your code to run on subsequent renders
+  }, []);
   const [data, setData] = useState<InventoryItem[]>([]);
   const [newRow, setNewRow] = useState<Partial<InventoryItem> | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());
 
-  const [isAddRow, setIsAddRow] = useState(true);
+  // const [isAddRow, setIsAddRow] = useState(true);
   const [newItem, setNewItem] = useState<string>('');
 
   useEffect(() => {
+    if (!isFirstRender.current) return; // only render the first time
     // Fetch data from the backend
     const fetchData = async () => {
+
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`, {
+          method: 'GET',
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -36,6 +45,7 @@ export default function Page() {
       }
     };
     fetchData();
+    isFirstRender.current = false;
   }, []);
 
   const handleInputChange = (
@@ -66,20 +76,20 @@ export default function Page() {
     }
   };
 
-  const handleAddNew = () => {
-    if (isAddRow) {
-      setNewRow({
-        name: '',
-        icon: '',
-        expiry: '',
-        tags: '',
-        count: '',
-      });
-    } else {
-      handleSaveNewRow(newRow);
-    }
-    setIsAddRow((prev) => !prev);
-  };
+  // const handleAddNew = () => {
+  //   if (isAddRow) {
+  //     setNewRow({
+  //       name: '',
+  //       icon: '',
+  //       expiry: '',
+  //       tags: '',
+  //       count: '',
+  //     });
+  //   } else {
+  //     handleSaveNewRow(newRow);
+  //   }
+  //   setIsAddRow((prev) => !prev);
+  // };
 
   const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
     if (newRow) {
@@ -123,15 +133,13 @@ export default function Page() {
     setIsDeleteMode(!isDeleteMode);
     setRowsToDelete(new Set());
   };
-
+  
   const handleRowSelectToggle = (rowIndex: number) => {
-    const newRowsToDelete = new Set(rowsToDelete);
-    if (newRowsToDelete.has(rowIndex)) {
-      newRowsToDelete.delete(rowIndex);
-    } else {
-      newRowsToDelete.add(rowIndex);
-    }
-    setRowsToDelete(newRowsToDelete);
+    setRowsToDelete(prevSet => {
+      const newSet = new Set(prevSet);
+      newSet.add(rowIndex);
+      return newSet;
+    });
   };
 
   const handleDeleteSelectedRows = async () => {
@@ -252,7 +260,7 @@ export default function Page() {
                 ))}
             </tr>
           ))}
-          {newRow && (
+          {/* {newRow && (
             <tr className="border-b border-gray-200 hover:bg-gray-100">
               <td className="py-3 px-6 text-left"></td>
               {Object.keys(newRow)
@@ -268,7 +276,7 @@ export default function Page() {
                   </td>
                 ))}
             </tr>
-          )}
+          )} */}
         </tbody>
       </table>
       <div className="flex flex-row justify-center gap-4 mt-5 w-full">
