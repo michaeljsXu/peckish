@@ -19,7 +19,7 @@ export interface InventoryItem {
   name: string;
   icon: string;
   expiry: string;
-  tags: string[];
+  tags: string;
   count: string;
 }
 
