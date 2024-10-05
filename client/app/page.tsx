@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Navbar from './components/navbar';
 import { useRouter } from 'next/navigation';
 import {
   BREAKFAST_PROMPT,
@@ -59,10 +58,9 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen w-screen">
-      <Navbar />
+    <div className="h-screen w-screen margins">
       <main className="h-full w-full flex flex-col justify-center items-center gap-6">
-        <h1 className="text-center">{mainMessage}</h1>
+        <h1 className="text-center w-[450px]">{mainMessage}</h1>
         <input
           type="text"
           value={userInput}

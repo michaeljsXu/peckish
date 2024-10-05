@@ -1,6 +1,5 @@
 'use client';
 import { useState, ChangeEvent, useEffect } from 'react';
-import Navbar from '../components/navbar';
 import { mockItems } from '../mockData/mockData';
 import { InventoryItem, categories } from '../models/models';
 import React from 'react';
@@ -75,9 +74,9 @@ export default function Page() {
 
   return (
     <div
+      className="margins"
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
     >
-      <Navbar />
       <h1>Hello, InventoryItem page!</h1>
       <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
         <thead>
@@ -101,17 +100,32 @@ export default function Page() {
                         multiple
                         value={row[attribute as keyof InventoryItem]}
                         onChange={(e) => {
-                          const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                          const newValue = row[attribute as keyof InventoryItem].includes(selectedOptions[0])
-                            ? row[attribute as keyof InventoryItem].filter((item: string) => item !== selectedOptions[0])
+                          const selectedOptions = Array.from(
+                            e.target.selectedOptions,
+                            (option) => option.value,
+                          );
+                          const newValue = row[attribute as keyof InventoryItem].includes(
+                            selectedOptions[0],
+                          )
+                            ? row[attribute as keyof InventoryItem].filter(
+                                (item: string) => item !== selectedOptions[0],
+                              )
                             : [...row[attribute as keyof InventoryItem], ...selectedOptions];
-                          handleInputChange({ ...e, target: { ...e.target, value: newValue } } as ChangeEvent<HTMLInputElement>, rowIndex, attribute as keyof InventoryItem);
+                          handleInputChange(
+                            {
+                              ...e,
+                              target: { ...e.target, value: newValue },
+                            } as ChangeEvent<HTMLInputElement>,
+                            rowIndex,
+                            attribute as keyof InventoryItem,
+                          );
                         }}
                         style={{ width: '100px' }} // Adjust the width as needed
                       >
                         {categories.map((category) => (
                           <option key={category} value={category}>
-                            {row[attribute as keyof InventoryItem].includes(category) ? '✔️' : ''}{category}
+                            {row[attribute as keyof InventoryItem].includes(category) ? '✔️' : ''}
+                            {category}
                           </option>
                         ))}
                       </select>
@@ -119,7 +133,9 @@ export default function Page() {
                       <input
                         type={attribute === 'expiry' ? 'date' : 'text'}
                         value={row[attribute as keyof InventoryItem]}
-                        onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof InventoryItem)}
+                        onChange={(e) =>
+                          handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
+                        }
                         style={{ width: '100px' }} // Adjust the width as needed
                       />
                     )
@@ -160,17 +176,31 @@ export default function Page() {
                       multiple
                       value={newRow[attribute as keyof InventoryItem]}
                       onChange={(e) => {
-                        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                        const newValue = newRow[attribute as keyof InventoryItem].includes(selectedOptions[0])
-                          ? newRow[attribute as keyof InventoryItem].filter((item: string) => item !== selectedOptions[0])
+                        const selectedOptions = Array.from(
+                          e.target.selectedOptions,
+                          (option) => option.value,
+                        );
+                        const newValue = newRow[attribute as keyof InventoryItem].includes(
+                          selectedOptions[0],
+                        )
+                          ? newRow[attribute as keyof InventoryItem].filter(
+                              (item: string) => item !== selectedOptions[0],
+                            )
                           : [...newRow[attribute as keyof InventoryItem], ...selectedOptions];
-                        handleNewRowChange({ ...e, target: { ...e.target, value: newValue } } as ChangeEvent<HTMLInputElement>, attribute as keyof InventoryItem);
+                        handleNewRowChange(
+                          {
+                            ...e,
+                            target: { ...e.target, value: newValue },
+                          } as ChangeEvent<HTMLInputElement>,
+                          attribute as keyof InventoryItem,
+                        );
                       }}
                       style={{ width: '100px' }} // Adjust the width as needed
                     >
                       {categories.map((category) => (
                         <option key={category} value={category}>
-                          {newRow[attribute as keyof InventoryItem].includes(category) ? '✔️ ' : ''}{category}
+                          {newRow[attribute as keyof InventoryItem].includes(category) ? '✔️ ' : ''}
+                          {category}
                         </option>
                       ))}
                     </select>

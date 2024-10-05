@@ -4,8 +4,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Message, Recipe } from '../models/models';
 import { mockRecipePreview } from '../mockData/mockData';
-
-import Navbar from '../components/navbar';
 import RecipePreview from '../components/recipePreview';
 
 export default function Page() {
@@ -66,7 +64,7 @@ export default function Page() {
   return (
     <>
       <div className="h-screen w-screen flex flex-row">
-        <div className="h-full w-full flex flex-col max-w-[60%] justify-end items-center p-2">
+        <div className="h-full w-full flex flex-col max-w-[60%] justify-end items-center margins">
           <div className="relative bottom-0 w-full overflow-y-auto">
             {/* <div className="flex flex-col justify-end"> */}
             {messages.map((message, index) => (
@@ -101,7 +99,7 @@ export default function Page() {
             value={input}
           />
         </div>
-        <div className="h-full w-full bg-orange-50 max-w-[40%] flex flex-col items-center justify-center left-shadow">
+        <div className="h-full w-full bg-orange-50 max-w-[40%] flex flex-col items-center justify-center left-shadow margins">
           {recipe ? (
             <>
               <div className="flex-1 overflow-y-auto">

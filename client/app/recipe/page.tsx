@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navbar from '../components/navbar';
 import { Recipe } from '../models/models';
 import { mockRecipes } from '../mockData/mockData';
 import RecipeCard from '../components/recipeCard';
@@ -14,9 +13,9 @@ export default function Page() {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
+        console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
         const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/recipe', {
-          "method": "GET"
+          method: 'GET',
         });
         console.log(response);
         const data = await response.json();
@@ -31,8 +30,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="h-screen w-screen flex flex-col justify-start">
-      <Navbar />
+    <div className="h-screen w-screen flex flex-col justify-start margins">
       <h1>Recipes</h1>
       <div className="flex flex-wrap justify-start gap-2">
         {recipes.map((recipe, index) => (

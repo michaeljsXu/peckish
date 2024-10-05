@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Navbar from '../components/navbar';
 
 export default function Page() {
   const [loading, setLoading] = useState(true);
@@ -12,13 +11,16 @@ export default function Page() {
   const handleApplyChanges = async () => {
     setIsClicked(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/670035083a92f02d95509e62`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/670035083a92f02d95509e62`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(user),
         },
-        body: JSON.stringify(user),
-      });
+      );
 
       if (!response.ok) {
         throw new Error('Failed to update user');
@@ -38,9 +40,12 @@ export default function Page() {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/670035083a92f02d95509e62`, {
-          method: 'GET',
-        });
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/670035083a92f02d95509e62`,
+          {
+            method: 'GET',
+          },
+        );
         const data = await response.json();
         setUser(data);
       } catch (error) {
@@ -87,13 +92,12 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col items-center h-screen">
+    <div className="flex flex-col items-center h-screen margins">
       {showAlert && (
         <div className="fixed top-0 left-0 right-0 bg-green-500 text-white text-center p-4">
           Update successful!
         </div>
       )}
-      <Navbar />
       <div className="w-1/2 flex flex-col gap-5">
         {Object.entries(user)
           .filter(([field]) => field !== '_id')
@@ -116,8 +120,9 @@ export default function Page() {
           ))}
         <button
           onClick={handleApplyChanges}
-          className={`mt-5 p-2 text-lg rounded border-none bg-blue-500 text-white transition-transform duration-300 ${isClicked ? 'transform scale-95' : ''
-            }`}
+          className={`mt-5 p-2 text-lg rounded border-none bg-blue-500 text-white transition-transform duration-300 ${
+            isClicked ? 'transform scale-95' : ''
+          }`}
         >
           Apply
         </button>
