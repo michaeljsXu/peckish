@@ -20,6 +20,8 @@ export default function Home() {
   const [mainMessage, setMainMessage] = useState('');
   const [userInput, setUserInput] = useState('');
   const [useAvailable, setUseAvailable] = useState(false);
+  const [expiredItems, setExpiredItems] = useState<string[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const updateMainMessage = () => {
@@ -36,6 +38,23 @@ export default function Home() {
     };
 
     updateMainMessage();
+  }, []);
+
+  useEffect(() => {
+    const fetchExpiredItems = async () => {
+      try {
+        const response = await fetch('/utility/getExpiredItems');
+        const data = await response.json();
+        if (data.items && data.items.length > 0) {
+          setExpiredItems(data.items);
+          setShowPopup(true);
+        }
+      } catch (error) {
+        console.error('Error fetching expired items:', error);
+      }
+    };
+
+    fetchExpiredItems();
   }, []);
 
   useEffect(() => {
@@ -80,6 +99,12 @@ export default function Home() {
           <label>Use available ingredients</label>
         </div>
 
+        {showPopup && (
+        <div style={popupStyle}>
+          These items are about to expire: {expiredItems.join(', ')}
+        </div>
+        )}
+
         <div>
           <button onClick={() => handleNavigate(RANDOM_PROMPT)} className="mr-5 btn-orange-outline">
             {RANDOM_PROMPT_TITLE}
@@ -92,3 +117,15 @@ export default function Home() {
     </div>
   );
 }
+
+const popupStyle: React.CSSProperties = {
+  position: 'fixed',
+  bottom: '10px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  backgroundColor: 'rgba(255, 0, 0, 0.8)',
+  color: 'white',
+  padding: '10px',
+  borderRadius: '5px',
+  zIndex: 1000,
+};
