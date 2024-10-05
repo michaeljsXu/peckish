@@ -120,7 +120,7 @@ export default function Page() {
           ))}
         <button
           onClick={handleApplyChanges}
-          className={`mt-5 p-2 text-lg rounded border-none bg-blue-500 text-white transition-transform duration-300 ${
+          className={`mt-5 p-2 text-lg rounded border-none btn-orange text-white transition-transform duration-300 ${
             isClicked ? 'transform scale-95' : ''
           }`}
         >

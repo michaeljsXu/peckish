@@ -14,11 +14,13 @@ const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
         <div className="flex flex-row justify-between items-center mb-4">
           {recipe.time ? <p>Prep Time: {recipe.time}</p> : <></>}
         </div>
-        <img
-          className="w-full h-auto mb-4"
-          src={recipe.picture.startsWith('data:') ? recipe.picture : `/path/to/images/${recipe.picture}`}
-          alt={recipe.name}
-        />
+        <div className="relative w-full mb-4" style={{ paddingBottom: '56.25%' }}>
+          <img
+            className="absolute top-0 left-0 w-full h-full object-cover rounded"
+            src={recipe.picture}
+            alt={recipe.name}
+          />
+        </div>
         <p className="mb-4">{recipe.desc}</p>
         <div className="mb-4">
           <h2>Ingredients</h2>
