@@ -93,14 +93,15 @@ export default function Page() {
       setMessages(() => [{ type: 'user', text: data.prompt }]);
       setIsLoading(true);
       fetchAndSetResponse(data);
-    } else {
-      if (localStorage.getItem('recipe')) {
-        const storedRecipe = localStorage.getItem('recipe');
-        if (storedRecipe) {
-          setRecipe(JSON.parse(storedRecipe));
-        }
-      }
-    }
+    } 
+    // else {
+    //   if (localStorage.getItem('recipe')) {
+    //     const storedRecipe = localStorage.getItem('recipe');
+    //     if (storedRecipe) {
+    //       setRecipe(JSON.parse(storedRecipe));
+    //     }
+    //   }
+    //}
 
     effectRan.current = true;
   }, []);
@@ -183,7 +184,7 @@ export default function Page() {
         </div>
       </div>
       <div className="h-full w-full bg-orange-50 max-w-[40%] flex flex-col items-center justify-center left-shadow margins">
-        {recipe ? (
+        {recipe?.ingredients ? (
           <>
             <div className="flex-1 overflow-y-auto">
               <RecipePreview recipe={recipe}></RecipePreview>
@@ -209,7 +210,7 @@ export default function Page() {
               </div>
             </>) : (
               <div className="text-center text-gray-500">
-                Recipes generated will show here!
+                Recipes generated will show here! Generating a recipe will take a few seconds.
               </div>
             )
         )}

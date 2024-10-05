@@ -1,3 +1,5 @@
+const cluster = require('cluster');
+const os = require('os');
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -5,6 +7,23 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 dotenv.config();
+
+const numCPUs = os.cpus().length;
+
+if (cluster.isMaster) {
+  console.log(`Master ${process.pid} is running`);
+
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
+
+  cluster.on('exit', (worker, code, signal) => {
+    console.log(`Worker ${worker.process.pid} died`);
+    // Optionally, you can fork a new worker here
+    cluster.fork();
+  });
+} else {
 const app = express();
 const indexRouter = require('./routes/index');
 
@@ -26,7 +45,7 @@ mongoose.connect(mongoURL)
 app.use('/', indexRouter);
 
 // Start the server
-const port = 5000;
+const port = 5001;
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running on http://localhost:${port}`);
-});
+});};
