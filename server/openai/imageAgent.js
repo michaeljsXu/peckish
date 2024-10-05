@@ -17,7 +17,7 @@ async function generateRecipeImage(description) {
       model: "dall-e-3",
       prompt: description,
       n: 1,
-      size: '512x512',
+      size: '1024x1024',
     });
 
     const imageUrl = response.data[0].url;

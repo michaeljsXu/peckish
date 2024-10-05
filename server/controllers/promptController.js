@@ -6,9 +6,11 @@ const seenItem = require('../models/seenItemModel');
 // Controller function to handle output from chatbot to the user
 exports.promptMessage = async (req, res) => {
   try {
+    console.log(req.body.prompt, req.body.useAvailable);
     const result = await recipeAgent.agent(req.body.prompt, req.body.useAvailable);
     res.status(200).json({ result });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: err.message });
   }
 };

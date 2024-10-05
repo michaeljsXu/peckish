@@ -65,10 +65,6 @@ export default function Home() {
     effectRan.current = true;
   }, []);
 
-  useEffect(() => {
-    console.log('User input:', userInput);
-  }, [userInput]);
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       console.log('User input on Enter:', userInput);
