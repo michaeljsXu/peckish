@@ -20,20 +20,21 @@ exports.promptItem = async (req, res) => {
       let result = {};
   
       // Check if the item name already exists in the SeenItem model
-      const seenItem = await SeenItem.findOne({ name: result.name });
+      const item = await seenItem.findOne({ name: result.name });
   
-      if (seenItem) {
+      if (item.name) {
         // If the item name exists, populate the fields from the SeenItem model
-        result.icon = seenItem.icon;
-        result.expiry = seenItem.expiry;
-        result.tags = seenItem.tags;
-        result.isFrozen = seenItem.isFrozen;
+        
+        result.icon = item.icon;
+        result.expiry = item.expiry;
+        result.tags = item.tags;
+        result.isFrozen = item.isFrozen;
       } else {
-        result = await ingredientAgent(prompt);
+        result = await ingredientAgent.agent(prompt);
       }
-  
       res.status(200).json({ result });
     } catch (err) {
+      console.log(err);
       res.status(500).json({ message: err.message });
     }
   };
