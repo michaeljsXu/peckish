@@ -75,7 +75,7 @@ export default function Page() {
                 }`}
               >
                 {message.type === 'bot' ? (
-                  <div className="bg-orange-300 w-6 h-6 rounded-full mr-2"></div>
+                  <img src="/chat-icon.png" className="w-6 h-6"></img>
                 ) : (
                   <></>
                 )}

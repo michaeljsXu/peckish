@@ -41,7 +41,7 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
 
   return (
     <>
-      <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white" onClick={onRecipeClick}>
+      <div className="max-w-sm rounded overflow-hidden shadow-lg bg-orange-100" onClick={onRecipeClick}>
         <div className="relative h-48">
           <img
             className="h-full w-full object-cover"

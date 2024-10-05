@@ -10,6 +10,10 @@ const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'] });
 export const metadata: Metadata = {
   title: 'Peckish',
   description: 'Your personal recipe assistant',
+  icons: {
+    icon: '/favicon.ico',
+    apple: 'icon.png',
+  },
 };
 
 export default function RootLayout({
