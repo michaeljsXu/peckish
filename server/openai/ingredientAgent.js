@@ -30,12 +30,12 @@ exports.agent = async (userInput) => {
   // });
   // //console.log(response);
   return {
-    "name": "legumes",
-    "icon": ":seedling:",
-    "expiry": "365",
-    "tags": "vegetable, plant-based protein,cereal",
-    "frozen": "false",
-    "count": "1-2 pounds"
-  }
+    name: "legumes",
+    icon: ":seedling:",
+    expiry: "365",
+    tags: "vegetable, plant-based protein,cereal",
+    frozen: "false",
+    count: "1-2 pounds"
+  };
   //return response.choices[0].message.content;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   BREAKFAST_PROMPT,
@@ -16,10 +16,13 @@ dotenv.config();
 
 export default function Home() {
   const router = useRouter();
+  const effectRan = useRef(false);
 
   const [mainMessage, setMainMessage] = useState('');
   const [userInput, setUserInput] = useState('');
   const [useAvailable, setUseAvailable] = useState(false);
+  const [expiredItems, setExpiredItems] = useState<string[]>([]);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const updateMainMessage = () => {
@@ -36,6 +39,30 @@ export default function Home() {
     };
 
     updateMainMessage();
+  }, []);
+
+  useEffect(() => {
+    if (effectRan.current) {
+      return;
+    }
+    const fetchExpiredItems = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/utility/getExpiredItems`, {
+          method: 'GET',
+        });
+        const data = await response.json();
+        if (data && data.length > 0) {
+          data.map((item: any) => console.log(item));
+          data.map((item: any) => setExpiredItems((prev) => [...prev, item.name]));
+          setShowPopup(true);
+        }
+      } catch (error) {
+        console.error('Error fetching expired items:', error);
+      }
+    };
+
+    fetchExpiredItems();
+    effectRan.current = true;
   }, []);
 
   useEffect(() => {
@@ -56,6 +83,22 @@ export default function Home() {
     };
     localStorage.setItem('chatData', JSON.stringify(data));
     router.push('/chat');
+  };
+
+  const handleRemoveExpiredItems = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/utility/removeExpiredItems`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setExpiredItems([]);
+        setShowPopup(false);
+      } else {
+        console.error('Failed to remove expired items');
+      }
+    } catch (error) {
+      console.error('Error removing expired items:', error);
+    }
   };
 
   return (
@@ -79,7 +122,22 @@ export default function Home() {
           />
           <label>Use available ingredients</label>
         </div>
-
+        
+        <div>
+          <div style={popupStyle}>
+            <p>
+              {expiredItems.length > 0
+                ? `These items are expired: ${expiredItems.join(', ')}`
+                : 'No expired items!'}
+            </p>
+            {expiredItems.length > 0 && (
+              <button onClick={handleRemoveExpiredItems} className="mr-5 btn-orange-outline">
+                Remove Expired Items
+              </button>
+            )}
+          </div>
+        </div>
+        
         <div>
           <button onClick={() => handleNavigate(RANDOM_PROMPT)} className="mr-5 btn-orange-outline">
             {RANDOM_PROMPT_TITLE}
@@ -92,3 +150,18 @@ export default function Home() {
     </div>
   );
 }
+
+const popupStyle: React.CSSProperties = {
+  position: 'fixed',
+  bottom: '10px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  backgroundColor: 'white',
+  color: '#ffffff',
+  padding: '10px',
+  borderRadius: '5px',
+  zIndex: 1000,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
