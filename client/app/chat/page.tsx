@@ -6,6 +6,8 @@ import { Message, Recipe } from '../models/models';
 import { mockRecipePreview } from '../mockData/mockData';
 import RecipePreview from '../components/recipePreview';
 
+const responseSound = new Audio("../../public/bird-response-sound.mp3");
+
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -37,6 +39,7 @@ export default function Page() {
       // TODO: recieve response from API/backend
       console.log('bot responds with a recipe');
       setRecipe(mockRecipePreview);
+      responseSound.play();
     }, 5500);
   }, []);
 
