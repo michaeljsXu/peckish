@@ -145,83 +145,219 @@ export default function Page() {
   };
 
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
-    >
-      <Navbar />
-      <h1>Hello, Inventory page!</h1>
-      <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
-        <thead>
-          <tr>
-            {isDeleteMode && <th style={{ width: '5%' }}></th>}
-            <th style={{ textAlign: 'center', width: '20%' }}>Name</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Icon</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Expiry Date</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Category</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, rowIndex) => (
-            <tr key={rowIndex} onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}>
-              {isDeleteMode && (
-                <td style={{ textAlign: 'center', width: '5%' }}>
-                  <input
-                    type="checkbox"
-                    checked={rowsToDelete.has(rowIndex)}
-                    onChange={() => handleRowSelectToggle(rowIndex)}
-                  />
-                </td>
-              )}
-              {Object.keys(row)
-                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
-                .map((attribute) => (
-                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                    <input
-                      type={attribute === 'expiry' ? 'date' : 'text'}
-                      value={row[attribute as keyof InventoryItem]}
-                      onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof InventoryItem)}
-                      style={{ width: '150px', backgroundColor: isDeleteMode && rowsToDelete.has(rowIndex) ? 'red' : 'white' }} // Adjust the width as needed
-                      readOnly={isDeleteMode}
-                    />
-                  </td>
-                ))}
+    <div className="h-full w-full flex flex-col items-center justify-start margins">
+      <h1 className="my-4">Inventory</h1>
+
+      <div className="w-full p-4">
+        <table className="w-full table-auto bg-white shadow-md rounded-lg">
+          <thead>
+            <tr className="bg-orange-100 text-gray-600 uppercase text-sm leading-normal">
+              <th className="py-3 px-6 text-left">Name</th>
+              <th className="py-3 px-6 text-left">Icon</th>
+              <th className="py-3 px-6 text-left">Expiry Date</th>
+              <th className="py-3 px-6 text-left">Category</th>
+              <th className="py-3 px-6 text-left">Count</th>
+              <th className="py-3 px-6 text-left">Actions</th>
             </tr>
-          ))}
-          {newRow && (
-            <tr>
-              {isDeleteMode && <td style={{ textAlign: 'center', width: '5%' }}></td>}
-              {Object.keys(newRow)
-                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
-                .map((attribute) => (
-                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                    <input
-                      type={attribute === 'expiry' ? 'date' : 'text'}
-                      value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
-                      onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
-                      style={{ width: '150px' }} // Adjust the width as needed
-                    />
-                  </td>
-                ))}
-              <td style={{ textAlign: 'center', width: '20%' }}>
-                <button onClick={handleSaveNewRow}>Save</button>
-                <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
-                  Delete
-                </button>
+          </thead>
+          <tbody className="text-gray-600 text-sm font-light">
+            {data.map((row, rowIndex) => (
+              <tr key={rowIndex} className="border-b border-gray-200 hover:bg-gray-100">
+                {Object.keys(row)
+                  .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                  .map((attribute) => (
+                    <td key={attribute} className="py-3 px-6 text-left">
+                      {editingRow === rowIndex ? (
+                        <input
+                          type={attribute === 'expiry' ? 'date' : 'text'}
+                          value={row[attribute as keyof InventoryItem]}
+                          onChange={(e) =>
+                            handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
+                          }
+                          style={{ width: '100px' }} // Adjust the width as needed
+                        />
+                      ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
+                        row[attribute as keyof InventoryItem].join(', ')
+                      ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
+                        row[attribute as keyof InventoryItem].toString()
+                      ) : (
+                        row[attribute as keyof InventoryItem]
+                      )}
+                    </td>
+                  ))}
+                <td className="py-3 px-6 text-left">
+                  {editingRow === rowIndex ? (
+                    <>
+                      <button onClick={handleSave}>Save</button>
+                      <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => handleEditToggle(rowIndex)}>Edit</button>
+                      <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {newRow && (
+              <tr className="border-b border-gray-200 hover:bg-gray-100">
+                {Object.keys(newRow)
+                  .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                  .map((attribute) => (
+                    <td key={attribute} className="py-3 px-6 text-left">
+                      <input
+                        type={attribute === 'expiry' ? 'date' : 'text'}
+                        value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
+                        onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
+                        style={{ width: '100px' }} // Adjust the width as needed
+                      />
+                    </td>
+                  ))}
+                <td className="py-3 px-6 text-left">
+                  <button onClick={handleSaveNewRow}>Save</button>
+                  <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            )}
+
+            {/* <tr className="border-b border-gray-200 hover:bg-gray-100">
+              <td className="py-3 px-6 text-left whitespace-nowrap">
+                <div className="flex items-center">
+                  <span className="font-medium">1</span>
+                </div>
+              </td>
+              <td className="py-3 px-6 text-left">
+                <div className="flex items-center">
+                  <span>John Doe</span>
+                </div>
+              </td>
+              <td className="py-3 px-6 text-center">28</td>
+              <td className="py-3 px-6 text-center">Software Engineer</td>
+              <td className="py-3 px-6 text-center">
+                <button className="bg-blue-500 text-white py-1 px-3 rounded text-sm">Edit</button>
               </td>
             </tr>
-          )}
-        </tbody>
-      </table>
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={handleAddNew}>Add New</button>
-        <button onClick={handleApplyChanges} style={{ marginLeft: '10px' }}>
-          Apply
-        </button>
-        <button onClick={isDeleteMode ? handleDeleteSelectedRows : handleDeleteModeToggle} style={{ marginLeft: '10px' }}>
-          {isDeleteMode ? 'Confirm' : 'Delete'}
-        </button>
+            <tr className="border-b border-gray-200 hover:bg-gray-100">
+              <td className="py-3 px-6 text-left whitespace-nowrap">
+                <div className="flex items-center">
+                  <span className="font-medium">2</span>
+                </div>
+              </td>
+              <td className="py-3 px-6 text-left">
+                <div className="flex items-center">
+                  <span>Jane Smith</span>
+                </div>
+              </td>
+              <td className="py-3 px-6 text-center">32</td>
+              <td className="py-3 px-6 text-center">Designer</td>
+              <td className="py-3 px-6 text-center">
+                <button className="bg-blue-500 text-white py-1 px-3 rounded text-sm">Edit</button>
+              </td>
+            </tr> */}
+            {/* Add more rows as needed */}
+          </tbody>
+        </table>
       </div>
+
+      <button onClick={handleAddNew} className="btn-orange">
+        Add New
+      </button>
+
+      {/*  */}
+
+      {/* <div
+        style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
+      >
+        <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: 'center', width: '20%' }}>Name</th>
+              <th style={{ textAlign: 'center', width: '20%' }}>Icon</th>
+              <th style={{ textAlign: 'center', width: '20%' }}>Expiry Date</th>
+              <th style={{ textAlign: 'center', width: '20%' }}>Category</th>
+              <th style={{ textAlign: 'center', width: '20%' }}>Count</th>
+              <th style={{ textAlign: 'center', width: '20%' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {Object.keys(row)
+                  .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                  .map((attribute) => (
+                    <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
+                      {editingRow === rowIndex ? (
+                        <input
+                          type={attribute === 'expiry' ? 'date' : 'text'}
+                          value={row[attribute as keyof InventoryItem]}
+                          onChange={(e) =>
+                            handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
+                          }
+                          style={{ width: '100px' }} // Adjust the width as needed
+                        />
+                      ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
+                        row[attribute as keyof InventoryItem].join(', ')
+                      ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
+                        row[attribute as keyof InventoryItem].toString()
+                      ) : (
+                        row[attribute as keyof InventoryItem]
+                      )}
+                    </td>
+                  ))}
+                <td style={{ textAlign: 'center', width: '20%' }}>
+                  {editingRow === rowIndex ? (
+                    <>
+                      <button onClick={handleSave}>Save</button>
+                      <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button onClick={() => handleEditToggle(rowIndex)}>Edit</button>
+                      <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {newRow && (
+              <tr>
+                {Object.keys(newRow)
+                  .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                  .map((attribute) => (
+                    <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
+                      <input
+                        type={attribute === 'expiry' ? 'date' : 'text'}
+                        value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
+                        onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
+                        style={{ width: '100px' }} // Adjust the width as needed
+                      />
+                    </td>
+                  ))}
+                <td style={{ textAlign: 'center', width: '20%' }}>
+                  <button onClick={handleSaveNewRow}>Save</button>
+                  <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        <button onClick={handleAddNew} style={{ marginTop: '20px' }}>
+          Add New
+        </button>
+      </div> */}
     </div>
   );
 }
