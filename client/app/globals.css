@@ -74,35 +74,3 @@ input.input-box {
   box-shadow: -5px 0 25px -7px rgba(0, 0, 0, 0.2);
 }
 
-/* Custom scrollbar styles */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 2px; /* Width of the scrollbar */
-  height: 2px; /* Height of the scrollbar for horizontal scrolling */
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent; /* Transparent background for the scrollbar track */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(136, 136, 136, 0.5); /* Semi-transparent color for the scrollbar thumb */
-  border-radius: 4px; /* Rounded corners for the scrollbar thumb */
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(85, 85, 85, 0.5); /* Semi-transparent color for the scrollbar thumb on hover */
-}
-
-/* Hide scrollbar buttons by default */
-.custom-scrollbar::-webkit-scrollbar-button {
-  display: none;
-}
-
-/* Show scrollbar buttons on hover */
-.custom-scrollbar:hover::-webkit-scrollbar-button {
-  display: block;
-  width: 2px;
-  height: 2px;
-  background: rgba(136, 136, 136, 0.5); /* Semi-transparent color for the scrollbar buttons */
-}
