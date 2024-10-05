@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Navbar from './components/navbar';
 import { useRouter } from 'next/navigation';
-// import { useRouter } from 'next/router';
 
 export default function Home() {
   const router = useRouter();
@@ -48,9 +47,19 @@ export default function Home() {
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-[450px]"
+          className="input-box w-[450px]"
           placeholder="Type your message here..."
         />
+        <div className="flex flex-row items-center">
+          <input
+            type="checkbox"
+            className="checkbox mr-2"
+            checked={useAvailable}
+            onChange={() => setUseAvailable((prev) => !prev)}
+          />
+          <label>Use available ingredients</label>
+        </div>
+
         <div>
           <button onClick={handleButtonClick} className="mr-5 btn-orange-outline">
             I&apos;m feeling peckish

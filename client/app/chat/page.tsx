@@ -95,7 +95,7 @@ export default function Page() {
           <input
             type="text"
             placeholder="Type a message"
-            className="w-full"
+            className="input-box w-full"
             onChange={handleInputChange}
             onKeyDown={onKeyDownEvent}
             value={input}
