@@ -24,17 +24,18 @@ export default function Page() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt, useAvailable }),
       });
-
+      
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const data = await response.json();
-
-      if (data.result) {
-        setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: data.result.message }]);
-        if (data.result.recipe) {
-          setRecipeAndSave(data.result.recipe);
+      const result = await response.json();
+      
+      if (result.result) {
+        const data = JSON.parse(result.result);
+        setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: data.message }]);
+        if (data.recipe) {
+          setRecipeAndSave(data.recipe);
         }
         responseSound.volume = 0.2;
         responseSound.play();
