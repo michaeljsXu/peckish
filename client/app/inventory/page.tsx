@@ -157,12 +157,16 @@ export default function Page() {
               <th className="py-3 px-6 text-left">Expiry Date</th>
               <th className="py-3 px-6 text-left">Category</th>
               <th className="py-3 px-6 text-left">Count</th>
-              <th className="py-3 px-6 text-left">Actions</th>
+              <th className="py-3 px-6 text-left"></th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
             {data.map((row, rowIndex) => (
-              <tr key={rowIndex} className="border-b border-gray-200 hover:bg-gray-100">
+              <tr
+                key={rowIndex}
+                className="border-b border-gray-200 hover:bg-gray-100"
+                onClick={() => handleEditToggle(rowIndex)}
+              >
                 {Object.keys(row)
                   .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                   .map((attribute) => (
@@ -186,7 +190,13 @@ export default function Page() {
                     </td>
                   ))}
                 <td className="py-3 px-6 text-left">
-                  {editingRow === rowIndex ? (
+                  <button
+                    onClick={() => handleDelete(rowIndex)}
+                    className="text-red-600 hover:text-red-700 text-2xl"
+                  >
+                    &times;
+                  </button>
+                  {/* {editingRow === rowIndex ? (
                     <>
                       <button onClick={handleSave}>Save</button>
                       <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
@@ -199,8 +209,14 @@ export default function Page() {
                       <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
                         Delete
                       </button>
+                      <button
+                        onClick={() => handleDelete(rowIndex)}
+                        className="text-red-600 hover:text-red-700 text-2xl"
+                      >
+                        &times;
+                      </button>
                     </>
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))}
