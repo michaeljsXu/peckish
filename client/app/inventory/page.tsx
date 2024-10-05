@@ -76,7 +76,7 @@ export default function Page() {
         count: '',
       });
     } else {
-      handleSaveNewRow();
+      handleSaveNewRow(newRow);
     }
     setIsAddRow((prev) => !prev);
   };
@@ -87,38 +87,35 @@ export default function Page() {
     }
   };
 
-  const handleSaveNewRow = async () => {
-    if (newRow) {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newRow),
-        });
-        console.log("here");
-        console.log(response);
-        if (!response.ok) {
-          throw new Error('Failed to save new item');
-        }
-        const savedItem = await response.json();
-        // Format the expiry date before updating the state
-        const { _id, __v, ...correctItem } = savedItem;
-        const formattedItem = {
-          ...correctItem,
-          expiry: correctItem.expiry
-            ? new Date(correctItem.expiry).toISOString().split('T')[0]
-            : '',
-        };
-        setData([...data, formattedItem]);
-        setNewRow(null);
-      } catch (error) {
-        console.log("error");
-        console.error('Error saving new item:', error);
+  const handleSaveNewRow = async (newRow) => {
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newRow),
+      });
+      console.log("here");
+      console.log(response);
+      if (!response.ok) {
+        throw new Error('Failed to save new item');
       }
-    } else {
-      console.log("no new row");
+      const savedItem = await response.json();
+      // Format the expiry date before updating the state
+      const { _id, __v, ...correctItem } = savedItem;
+      const formattedItem = {
+        ...correctItem,
+        expiry: correctItem.expiry
+          ? new Date(correctItem.expiry).toISOString().split('T')[0]
+          : '',
+      };
+      setData([...data, formattedItem]);
+      setNewRow(null);
+    } catch (error) {
+      console.log("error");
+      console.error('Error saving new item:', error);
     }
   };
 
@@ -159,6 +156,10 @@ export default function Page() {
     setNewRow(null);
   };
 
+  useEffect(() =>  {
+    const r = handleSaveNewRow(newRow);
+    console.log(r);
+  }, [newRow]);
 
   const handleMagicAdd = async () => {
     try {
@@ -171,22 +172,30 @@ export default function Page() {
         throw new Error('Failed to fetch new item');
       }
       const result = await response.json();
-      const data = result.result;
+
+      let data_no_id = JSON.parse(result.result);
+
+      //let data = {id: "test", name: 'orange', icon: '🍊', expiry: '2024-11-02', tags: 'fruit, vitamin C', count: '5'};
+      let data = { id: 'test', ...data_no_id };
+      console.log(data);
       const currentDate = new Date();
       currentDate.setDate(currentDate.getDate() + parseInt(data.expiry, 10));
-      data.expiry = currentDate.toISOString().split('T')[0];
+      if (!isNaN(parseInt(data.expiry, 10))) {
+        currentDate.setDate(currentDate.getDate() + parseInt(data.expiry, 10));
+        data.expiry = currentDate.toISOString().split('T')[0];
+      } else {
+        data.expiry = '';
+      }
       console.log('Fetched new item:', data);
       setNewRow(data);
       console.log(newRow);
       console.log("calling handle save new row")
-      const r = handleSaveNewRow();
-      console.log(r);
       // You can handle the result here, e.g., add it to the inventory list
     } catch (error) {
       console.error('Error fetching new item:', error);
     }
   };
-  
+
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-start margins">
@@ -206,11 +215,10 @@ export default function Page() {
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className={`border-b border-gray-200 ${
-                isDeleteMode && rowsToDelete.has(rowIndex)
+              className={`border-b border-gray-200 ${isDeleteMode && rowsToDelete.has(rowIndex)
                   ? 'bg-orange-300 hover:bg-orange-400'
                   : 'hover:bg-gray-100'
-              }`}
+                }`}
               onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}
             >
               <td className="py-3 px-6 text-left">
