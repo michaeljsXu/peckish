@@ -8,7 +8,6 @@ import Snackbar from '../components/snackbar';
 export default function Page() {
   const isFirstRender = useRef(true);
   const [data, setData] = useState<InventoryItem[]>([]);
-  const [newRow, setNewRow] = useState<Partial<InventoryItem> | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());''
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
@@ -73,27 +72,6 @@ export default function Page() {
     }
   };
 
-  // const handleAddNew = () => {
-  //   if (isAddRow) {
-  //     setNewRow({
-  //       name: '',
-  //       icon: '',
-  //       expiry: '',
-  //       tags: '',
-  //       count: '',
-  //     });
-  //   } else {
-  //     handleSaveNewRow(newRow);
-  //   }
-  //   setIsAddRow((prev) => !prev);
-  // };
-
-  // const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
-  //   if (newRow) {
-  //     setNewRow({ ...newRow, [attribute]: e.target.value });
-  //   }
-  // };
-
   const handleSaveNewRow = async (newRow: Partial<InventoryItem> | null) => {
     try {
       if (!newRow) {
@@ -155,20 +133,10 @@ export default function Page() {
       setData(newData);
       setIsDeleteMode(false);
       setRowsToDelete(new Set());
-      //alert('Selected rows deleted successfully');
     } catch (error) {
       console.error('Error deleting selected rows:', error);
     }
   };
-
-  // const handleCancelNewRow = () => {
-  //   setNewRow(null);
-  // };
-
-  // useEffect(() =>  {
-  //   const r = handleSaveNewRow(newRow);
-  //   console.log(r);
-  // }, [newRow]);
 
   const handleMagicAdd = async () => {
     try {
@@ -181,12 +149,9 @@ export default function Page() {
         throw new Error('Failed to fetch new item');
       }
       const result = await response.json();
-
-      let data_no_id = JSON.parse(result.result);
-
-      //let data = {id: "test", name: 'orange', icon: '🍊', expiry: '2024-11-02', tags: 'fruit, vitamin C', count: '5'};
-      let data = { id: 'test', ...data_no_id };
-      console.log(data);
+      const data_no_id = JSON.parse(result.result);
+      const data = { id: 'test', ...data_no_id };
+      console.log('Fetched new item:', data);
       const currentDate = new Date();
       currentDate.setDate(currentDate.getDate() + parseInt(data.expiry, 10));
       if (!isNaN(parseInt(data.expiry, 10))) {
@@ -195,10 +160,8 @@ export default function Page() {
       } else {
         data.expiry = '';
       }
-      console.log('Fetched new item:', data);
-      //setNewRow(data);
-      const res = await handleSaveNewRow(data);
-      console.log("calling handle save new row", res);
+      
+      handleSaveNewRow(data);
     } catch (error) {
       console.error('Error fetching new item:', error);
     }
@@ -239,15 +202,6 @@ export default function Page() {
                 }`}
               onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}
             >
-              {/* <td className="py-3 px-6 text-left">
-                {isDeleteMode && (
-                  <input
-                    type="checkbox"
-                    checked={rowsToDelete.has(rowIndex)}
-                    onChange={() => handleRowSelectToggle(rowIndex)}
-                  />
-                )}
-              </td> */}
               {Object.keys(row)
                 .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                 .map((attribute) => (
@@ -258,36 +212,13 @@ export default function Page() {
                       onChange={(e) =>
                         handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
                       }
-
-                      className="bg-transparent"
-                      style={{
-                        width: '150px',
-                        // backgroundColor:
-                        //   isDeleteMode && rowsToDelete.has(rowIndex) ? 'red' : 'white',
-                      }} // Adjust the width as needed
+                      className="bg-transparent w-[150px]"
                       readOnly={isDeleteMode}
                     />
                   </td>
                 ))}
             </tr>
           ))}
-          {/* {newRow && (
-            <tr className="border-b border-gray-200 hover:bg-gray-100">
-              <td className="py-3 px-6 text-left"></td>
-              {Object.keys(newRow)
-                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
-                .map((attribute) => (
-                  <td key={attribute} className="py-3 px-6 text-left">
-                    <input
-                      type={attribute === 'expiry' ? 'date' : 'text'}
-                      value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
-                      onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
-                      style={{ width: '150px' }} // Adjust the width as needed
-                    />
-                  </td>
-                ))}
-            </tr>
-          )} */}
         </tbody>
       </table>
       <div className="flex flex-row justify-center gap-4 mt-5 w-full">
