@@ -20,22 +20,25 @@ const messages = [
 ];
 
 exports.agent = async (userInput) => {
+  console.log("user input is", userInput);
   messages.push({
     role: "user",
     content: userInput,
   });
-  // const response = await openai.chat.completions.create({
-  //   model: "gpt-4o-mini",
-  //   messages: messages,
-  // });
-  // //console.log(response);
-  return {
-    name: "legumes",
-    icon: ":seedling:",
-    expiry: "365",
-    tags: "vegetable, plant-based protein,cereal",
-    frozen: "false",
-    count: "1-2 pounds"
-  };
-  //return response.choices[0].message.content;
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: messages,
+  });
+  console.log(JSON.parse(response.choices[0].message.content))
+  return response.choices[0].message.content;
 }
+
+//console.log(response);
+// return {
+//   id: "abc",
+//   name: "legumes",
+//   icon: "s",
+//   expiry: "365",
+//   tags: "vegetable, plant-based protein,cereal",
+//   count: "1-2 pounds"
+// };
