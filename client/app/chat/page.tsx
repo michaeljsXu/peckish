@@ -9,6 +9,7 @@ import { TypeAnimation } from 'react-type-animation';
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const effectRan = useRef(false);
+  const responseSound = new Audio("bird-response-sound.mp3");
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
@@ -35,6 +36,8 @@ export default function Page() {
         if (data.result.recipe) {
           setRecipe(data.result.recipe);
         }
+        responseSound.volume = 0.2;
+        responseSound.play();
       }
     } catch (error) {
       console.error('Error fetching message:', error);
@@ -84,54 +87,56 @@ export default function Page() {
   };
 
   return (
-    <div className="h-screen w-screen flex flex-row">
+    <div className="h-full w-full flex flex-row">
       <div className="h-full w-full flex flex-col max-w-[60%] justify-end items-center margins">
-        <div className="relative bottom-0 w-full overflow-y-auto mb-2">
+        <div className="relative bottom-0 w-full overflow-y-auto">
+          {/* <div className="flex flex-col justify-end"> */}
           {messages.map((message, index) => (
-        <div
-          key={index}
-          className={`flex p-2 items-center ${message.type === 'bot' ? 'justify-start' : 'justify-end'
-            }`}
-        >
-          {message.type === 'bot' ? (
-            <div className="bg-orange-300 w-6 h-6 rounded-full mr-2"></div>
-          ) : (
-            <></>
-          )}
-          <div className={`max-w-[90%] p-2 rounded-lg flex  ${message.type === 'bot' ? '' : 'bg-gray-200'}`}>
-            {message.type === 'bot' ? (
-          <p className="w-fit"><TypeAnimation
-            sequence={[
-              message.text
-            ]}
-            wrapper="span"
-            cursor={false}
-            repeat={0}
-            speed={75}
-            style={{}}
-          /></p>
-            ) : (
-          <p className="w-fit">{message.text}</p>
-            )}
-          </div>
-        </div>
+            <div
+              key={index}
+              className={`flex p-2 items-center ${message.type === 'bot' ? 'justify-start' : 'justify-end'
+                }`}
+            >
+              {message.type === 'bot' ? (
+                <img src="/chat-icon.png" className="w-6 h-6"></img>
+
+              ) : (
+                <></>
+              )}
+              <div className={`max-w-[90%] p-2 rounded-lg flex  ${message.type === 'bot' ? '' : 'bg-gray-200'}`}>
+                {message.type === 'bot' ? (
+                  <p className="w-fit"><TypeAnimation
+                    sequence={[
+                      message.text
+                    ]}
+                    wrapper="span"
+                    cursor={false}
+                    repeat={0}
+                    speed={75}
+                    style={{}}
+                  /></p>
+                ) : (
+                  <p className="w-fit">{message.text}</p>
+                )}
+              </div>
+            </div>
           ))}
           <div ref={messagesEndRef} />
         </div>
         <div className="relative w-full">
           <input
-        type="text"
-        placeholder="Type a message"
-        className="input-box w-full pr-10"
-        onChange={handleInputChange}
-        onKeyDown={onKeyDownEvent}
-        value={input}
+            type="text"
+            placeholder="Type a message"
+            className="input-box w-full pr-10"
+            onChange={handleInputChange}
+            onKeyDown={onKeyDownEvent}
+            value={input}
           />
           <button
-        className="absolute right-0 top-0 h-full px-4 bg-orange-500 text-white"
-        onClick={() => onKeyDownEvent({ key: 'Enter' } as React.KeyboardEvent<HTMLInputElement>)}
+            className="absolute right-0 top-0 h-full px-4 bg-orange-500 text-white"
+            onClick={() => onKeyDownEvent({ key: 'Enter' } as React.KeyboardEvent<HTMLInputElement>)}
           >
-        Send
+            Send
           </button>
         </div>
       </div>

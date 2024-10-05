@@ -13,9 +13,7 @@ const messages = [
   "name": "name goes here",
   "icon": "a unicode character representing the item",
   "expiry": "expected shelf life of the item, in days",
-  "tags": [
-    "tag1, such as meat/vegetable", "tag2", "tag3
-  ],
+  "tags": "meat, protein",
   "count": "a typical amount the user might buy"
 }`,
   },
@@ -35,11 +33,7 @@ exports.agent = async (userInput) => {
     "name": "legumes",
     "icon": ":seedling:",
     "expiry": "365",
-    "tags": [
-      "vegetable",
-      "plant-based protein",
-      "cereal"
-    ],
+    "tags": "vegetable, plant-based protein,cereal",
     "frozen": "false",
     "count": "1-2 pounds"
   }

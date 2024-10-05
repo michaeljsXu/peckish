@@ -19,7 +19,6 @@ export default function Page() {
         setRecipes(data);
       } catch (error) {
         console.error('Error fetching recipes:', error);
-
       } finally {
         setLoading(false);
       }
@@ -41,7 +40,7 @@ export default function Page() {
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col items-center">
+    <div className="h-full w-full flex flex-col items-center">
       <h1 className="text-3xl font-bold my-4">Recipes</h1>
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
         {recipes.slice(0, visibleRecipes).map((recipe, index) => (

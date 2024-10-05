@@ -3,16 +3,16 @@ const mongoose = require('mongoose');
 const seenItemSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    required: false,
     unique: true // Ensure the name is unique
   },
   icon: {
     type: String,
-    required: true
+    required: false
   },
   expiry: {
     type: Date,
-    required: true
+    required: false
   },
   tags: [String],
   isFrozen: {

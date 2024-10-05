@@ -59,7 +59,7 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen w-screen margins">
+    <div className="h-full w-full margins">
       <main className="h-full w-full flex flex-col justify-center items-center gap-6">
         <h1 className="text-center w-[450px]">{mainMessage}</h1>
         <input
