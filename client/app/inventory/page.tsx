@@ -1,29 +1,36 @@
 'use client';
 import { useState, ChangeEvent, useEffect } from 'react';
 import Navbar from '../components/navbar';
-import { mockItems } from '../mockData/mockData';
-import { InventoryItem, categories } from '../models/models';
+import { InventoryItem } from '../models/models';
 import React from 'react';
 
-// TODO: anytime when save is clicked, make call to API and send info to backend db
+// TODO: anytime when save is clicked, make call to API and send info to backend
 export default function Page() {
   const [data, setData] = useState<InventoryItem[]>([]);
   const [editingRow, setEditingRow] = useState<number | null>(null);
-  const [newRow, setNewRow] = useState<InventoryItem | null>(null);
+  const [newRow, setNewRow] = useState<Partial<InventoryItem> | null>(null);
 
   useEffect(() => {
-    // Simulate a backend call to fetch data
+    // Fetch data from the backend
     const fetchData = async () => {
-      const result: InventoryItem[] = mockItems.map((item) => ({
-        name: item.name,
-        emoji: item.emoji,
-        expiry: item.expiry,
-        tags: item.tags,
-        count: item.count,
-      }));
-      setData(result);
+      try {
+        const response = await fetch('http://localhost:4000/item');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const result: InventoryItem[] = (await response.json()).map((item: any) => ({
+          id: item._id, // Assuming the backend returns _id
+          name: item.name,
+          icon: item.icon,
+          expiry: item.expiry,
+          tags: item.tags,
+          count: item.count,
+        }));
+        setData(result);
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
     };
-
     fetchData();
   }, []);
 
@@ -41,14 +48,36 @@ export default function Page() {
     setData(newData);
   };
 
-  const handleSave = () => {
-    setEditingRow(null);
+  const handleSave = async () => {
+    if (editingRow !== null) {
+      const updatedRow = data[editingRow];
+      try {
+        const response = await fetch(`http://localhost:4000/item/${updatedRow.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedRow),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to update item');
+        }
+        const updatedItem = await response.json();
+        const { _id, __v, ...itemWithoutId } = updatedItem;
+        const newData = [...data];
+        newData[editingRow] = itemWithoutId;
+        setData(newData);
+        setEditingRow(null);
+      } catch (error) {
+        console.error('Error updating item:', error);
+      }
+    }
   };
 
   const handleAddNew = () => {
     setNewRow({
       name: '',
-      emoji: '',
+      icon: '',
       expiry: '',
       tags: [],
       count: '',
@@ -61,16 +90,48 @@ export default function Page() {
     }
   };
 
-  const handleSaveNewRow = () => {
+  const handleSaveNewRow = async () => {
     if (newRow) {
-      setData([...data, newRow]);
-      setNewRow(null);
+      try {
+        const response = await fetch('http://localhost:4000/item', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newRow),
+        });
+        if (!response.ok) {
+          throw new Error('Failed to save new item');
+        }
+        const savedItem = await response.json();
+        // Exclude the 'id' attribute from the saved item before updating the state
+        const { _id, __v, ...itemWithoutId } = savedItem;
+        setData([...data, itemWithoutId]);
+        setNewRow(null);
+      } catch (error) {
+        console.error('Error saving new item:', error);
+      }
     }
   };
 
-  const handleDelete = (rowIndex: number) => {
-    const newData = data.filter((_, index) => index !== rowIndex);
-    setData(newData);
+  const handleDelete = async (rowIndex: number) => {
+    const itemToDelete = data[rowIndex];
+    try {
+      const response = await fetch(`http://localhost:4000/item/${itemToDelete.id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete item');
+      }
+      const newData = data.filter((_, index) => index !== rowIndex);
+      setData(newData);
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
+
+  const handleCancelNewRow = () => {
+    setNewRow(null);
   };
 
   return (
@@ -78,12 +139,12 @@ export default function Page() {
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
     >
       <Navbar />
-      <h1>Hello, InventoryItem page!</h1>
+      <h1>Hello, Inventory page!</h1>
       <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
         <thead>
           <tr>
             <th style={{ textAlign: 'center', width: '20%' }}>Name</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Emoji</th>
+            <th style={{ textAlign: 'center', width: '20%' }}>Icon</th>
             <th style={{ textAlign: 'center', width: '20%' }}>Expiry Date</th>
             <th style={{ textAlign: 'center', width: '20%' }}>Category</th>
             <th style={{ textAlign: 'center', width: '20%' }}>Count</th>
@@ -93,45 +154,26 @@ export default function Page() {
         <tbody>
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {Object.keys(row).map((attribute) => (
-                <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                  {editingRow === rowIndex ? (
-                    attribute === 'tags' ? (
-                      <select
-                        multiple
-                        value={row[attribute as keyof InventoryItem]}
-                        onChange={(e) => {
-                          const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                          const newValue = row[attribute as keyof InventoryItem].includes(selectedOptions[0])
-                            ? row[attribute as keyof InventoryItem].filter((item: string) => item !== selectedOptions[0])
-                            : [...row[attribute as keyof InventoryItem], ...selectedOptions];
-                          handleInputChange({ ...e, target: { ...e.target, value: newValue } } as ChangeEvent<HTMLInputElement>, rowIndex, attribute as keyof InventoryItem);
-                        }}
-                        style={{ width: '100px' }} // Adjust the width as needed
-                      >
-                        {categories.map((category) => (
-                          <option key={category} value={category}>
-                            {row[attribute as keyof InventoryItem].includes(category) ? '✔️' : ''}{category}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
+              {Object.keys(row)
+                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                .map((attribute) => (
+                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
+                    {editingRow === rowIndex ? (
                       <input
                         type={attribute === 'expiry' ? 'date' : 'text'}
                         value={row[attribute as keyof InventoryItem]}
                         onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof InventoryItem)}
                         style={{ width: '100px' }} // Adjust the width as needed
                       />
-                    )
-                  ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
-                    row[attribute as keyof InventoryItem].join(', ')
-                  ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
-                    row[attribute as keyof InventoryItem].toString()
-                  ) : (
-                    row[attribute as keyof InventoryItem]
-                  )}
-                </td>
-              ))}
+                    ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
+                      row[attribute as keyof InventoryItem].join(', ')
+                    ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
+                      row[attribute as keyof InventoryItem].toString()
+                    ) : (
+                      row[attribute as keyof InventoryItem]
+                    )}
+                  </td>
+                ))}
               <td style={{ textAlign: 'center', width: '20%' }}>
                 {editingRow === rowIndex ? (
                   <>
@@ -153,39 +195,23 @@ export default function Page() {
           ))}
           {newRow && (
             <tr>
-              {Object.keys(newRow).map((attribute) => (
-                <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                  {attribute === 'tags' ? (
-                    <select
-                      multiple
-                      value={newRow[attribute as keyof InventoryItem]}
-                      onChange={(e) => {
-                        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                        const newValue = newRow[attribute as keyof InventoryItem].includes(selectedOptions[0])
-                          ? newRow[attribute as keyof InventoryItem].filter((item: string) => item !== selectedOptions[0])
-                          : [...newRow[attribute as keyof InventoryItem], ...selectedOptions];
-                        handleNewRowChange({ ...e, target: { ...e.target, value: newValue } } as ChangeEvent<HTMLInputElement>, attribute as keyof InventoryItem);
-                      }}
-                      style={{ width: '100px' }} // Adjust the width as needed
-                    >
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {newRow[attribute as keyof InventoryItem].includes(category) ? '✔️ ' : ''}{category}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
+              {Object.keys(newRow)
+                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                .map((attribute) => (
+                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
                     <input
                       type={attribute === 'expiry' ? 'date' : 'text'}
-                      value={newRow[attribute as keyof InventoryItem]}
+                      value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
                       onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
                       style={{ width: '100px' }} // Adjust the width as needed
                     />
-                  )}
-                </td>
-              ))}
+                  </td>
+                ))}
               <td style={{ textAlign: 'center', width: '20%' }}>
                 <button onClick={handleSaveNewRow}>Save</button>
+                <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
+                  Delete
+                </button>
               </td>
             </tr>
           )}

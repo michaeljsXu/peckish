@@ -14,8 +14,9 @@ export interface Recipe {
 }
 
 export interface InventoryItem {
+  id: string;
   name: string;
-  emoji: string;
+  icon: string;
   expiry: string;
   tags: string[];
   count: string;
