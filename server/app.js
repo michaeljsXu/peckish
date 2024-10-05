@@ -10,7 +10,7 @@ const indexRouter = require('./routes/index');
 
 // Middleware
 app.use(express.json());
-app.use(cors({origin: 'http://localhost:3000'}));
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded data
 
 // static
