@@ -3,13 +3,37 @@
 import { useState, useEffect } from 'react';
 import Navbar from './components/navbar';
 import { useRouter } from 'next/navigation';
+import {
+  BREAKFAST_PROMPT,
+  DINNER_PROMPT,
+  LATE_NIGHT_PROMPT,
+  LUNCH_PROMPT,
+  RANDOM_PROMPT,
+} from './constants/constants';
 
 export default function Home() {
   const router = useRouter();
 
-  const [mainMessage, setMainMessage] = useState("What's on the menu today?");
+  const [mainMessage, setMainMessage] = useState('');
   const [userInput, setUserInput] = useState('');
   const [useAvailable, setUseAvailable] = useState(false);
+
+  useEffect(() => {
+    const updateMainMessage = () => {
+      const currentHour = new Date().getHours();
+      if (currentHour >= 3 && currentHour < 10) {
+        setMainMessage(BREAKFAST_PROMPT);
+      } else if (currentHour >= 10 && currentHour < 15) {
+        setMainMessage(LUNCH_PROMPT);
+      } else if (currentHour >= 15 && currentHour < 22) {
+        setMainMessage(DINNER_PROMPT);
+      } else {
+        setMainMessage(LATE_NIGHT_PROMPT);
+      }
+    };
+
+    updateMainMessage();
+  }, []);
 
   useEffect(() => {
     console.log('User input:', userInput);
@@ -23,8 +47,8 @@ export default function Home() {
   };
 
   const handleButtonClick = () => {
-    console.log("I'm feeling peckish");
-    handleNavigate("I'm feeling peckish");
+    console.log(RANDOM_PROMPT);
+    handleNavigate(RANDOM_PROMPT);
     // suggest me anything
     // message, useAvailable
   };
@@ -62,7 +86,7 @@ export default function Home() {
 
         <div>
           <button onClick={handleButtonClick} className="mr-5 btn-orange-outline">
-            I&apos;m feeling peckish
+            {RANDOM_PROMPT}
           </button>
           <button
             onClick={() => console.log('User input on Enter:', userInput)}
