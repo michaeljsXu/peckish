@@ -13,7 +13,7 @@ const messages = [
   "name": "name goes here",
   "icon": "a unicode character representing the item",
   "expiry": "expected shelf life of the item, in days",
-  "tags": "meat", "protein",
+  "tags": "meat, protein",
   "count": "a typical amount the user might buy"
 }`,
   },
