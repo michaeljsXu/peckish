@@ -4,7 +4,6 @@ import { use, useEffect, useRef, useState } from 'react';
 import { Message, Recipe } from '../models/models';
 import RecipePreview from '../components/recipePreview';
 import { TypeAnimation } from 'react-type-animation';
-import local from 'next/font/local';
 
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -16,6 +15,7 @@ export default function Page() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [useAvailable, setUseAvailable] = useState(false);
   const [isloading, setIsLoading] = useState(false);
+  const [isRecipeSaved, setIsRecipeSaved] = useState(false);
 
   const fetchAndSetResponse = async ({ prompt, useAvailable }: { prompt: string; useAvailable: boolean }) => {
     try {
@@ -41,6 +41,29 @@ export default function Page() {
       }
     } catch (error) {
       console.error('Error fetching message:', error);
+    }
+  };
+
+  const saveRecipetoDB = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipe),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Network response was not ok: ${errorText}`);
+      }
+
+      const data = await response.json();
+
+      setIsRecipeSaved(true);
+      console.log('Recipe saved successfully:', data);
+    } catch (error) {
+      console.error('Error saving recipe:', error);
     }
   };
 
@@ -165,7 +188,13 @@ export default function Page() {
               <RecipePreview recipe={recipe}></RecipePreview>
             </div>
             <div className="w-full flex justify-center items-center">
-              <button className="w-fit m-2 btn-orange">Save Recipe</button>
+                <button 
+                  className="w-fit m-2 btn-orange" 
+                  onClick={saveRecipetoDB} 
+                  disabled={isRecipeSaved}
+                >
+                  {isRecipeSaved ? 'Saved!' : 'Save Recipe'}
+                </button>
             </div>
           </>
         ) : (

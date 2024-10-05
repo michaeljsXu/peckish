@@ -2,11 +2,6 @@ import React from 'react';
 import { Recipe } from '../models/models';
 
 const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
-  const onSave = async () => {
-    console.log('save recipe');
-    // TODO: call backend
-  };
-
   return (
     <div className="h-full w-full flex flex-col justify-between p-4">
       <div className="relative w-full h-full top-0 flex flex-col">
