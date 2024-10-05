@@ -45,10 +45,10 @@ export default function Page() {
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
         {recipes.slice(0, visibleRecipes).map((recipe, index) => (
           <RecipeCard
-            key={index}
-            recipe={recipe}
+            key={recipes.length - 1 - index}
+            recipe={recipes[recipes.length - 1 - index]}
             onRecipeDelete={() => {
-              setRecipes((prevRecipes) => prevRecipes.filter((_, i) => i !== index));
+              setRecipes((prevRecipes) => prevRecipes.filter((_, i) => i !== recipes.length - 1 - index));
             }}
           />
         ))}
