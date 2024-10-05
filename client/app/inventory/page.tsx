@@ -3,18 +3,15 @@ import { useState, ChangeEvent, useEffect, useRef } from 'react';
 import Navbar from '../components/navbar';
 import { InventoryItem } from '../models/models';
 import React from 'react';
+import Snackbar from '../components/snackbar';
 
 export default function Page() {
   const isFirstRender = useRef(true);
-
-  useEffect(() => {
-   
-    // Your code to run on subsequent renders
-  }, []);
   const [data, setData] = useState<InventoryItem[]>([]);
   const [newRow, setNewRow] = useState<Partial<InventoryItem> | null>(null);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());
+  const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());''
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
   // const [isAddRow, setIsAddRow] = useState(true);
   const [newItem, setNewItem] = useState<string>('');
@@ -70,7 +67,7 @@ export default function Page() {
         }),
       );
       await Promise.all(promises);
-      alert('Changes applied successfully');
+      onChangesApplied();
     } catch (error) {
       console.error('Error applying changes:', error);
     }
@@ -91,15 +88,18 @@ export default function Page() {
   //   setIsAddRow((prev) => !prev);
   // };
 
-  const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
-    if (newRow) {
-      setNewRow({ ...newRow, [attribute]: e.target.value });
-    }
-  };
+  // const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
+  //   if (newRow) {
+  //     setNewRow({ ...newRow, [attribute]: e.target.value });
+  //   }
+  // };
 
-  const handleSaveNewRow = async (newRow) => {
-
+  const handleSaveNewRow = async (newRow: Partial<InventoryItem> | null) => {
     try {
+      if (!newRow) {
+        console.error('No new row to save');
+        return;
+      }
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`, {
         method: 'POST',
         headers: {
@@ -107,7 +107,6 @@ export default function Page() {
         },
         body: JSON.stringify(newRow),
       });
-      console.log("here");
       console.log(response);
       if (!response.ok) {
         throw new Error('Failed to save new item');
@@ -122,9 +121,7 @@ export default function Page() {
           : '',
       };
       setData([...data, formattedItem]);
-      setNewRow(null);
     } catch (error) {
-      console.log("error");
       console.error('Error saving new item:', error);
     }
   };
@@ -133,11 +130,15 @@ export default function Page() {
     setIsDeleteMode(!isDeleteMode);
     setRowsToDelete(new Set());
   };
-  
+
   const handleRowSelectToggle = (rowIndex: number) => {
     setRowsToDelete(prevSet => {
       const newSet = new Set(prevSet);
-      newSet.add(rowIndex);
+      if (prevSet.has(rowIndex)) {
+        newSet.delete(rowIndex);
+      } else {
+        newSet.add(rowIndex);
+      }
       return newSet;
     });
   };
@@ -154,20 +155,20 @@ export default function Page() {
       setData(newData);
       setIsDeleteMode(false);
       setRowsToDelete(new Set());
-      alert('Selected rows deleted successfully');
+      //alert('Selected rows deleted successfully');
     } catch (error) {
       console.error('Error deleting selected rows:', error);
     }
   };
 
-  const handleCancelNewRow = () => {
-    setNewRow(null);
-  };
+  // const handleCancelNewRow = () => {
+  //   setNewRow(null);
+  // };
 
-  useEffect(() =>  {
-    const r = handleSaveNewRow(newRow);
-    console.log(r);
-  }, [newRow]);
+  // useEffect(() =>  {
+  //   const r = handleSaveNewRow(newRow);
+  //   console.log(r);
+  // }, [newRow]);
 
   const handleMagicAdd = async () => {
     try {
@@ -195,13 +196,22 @@ export default function Page() {
         data.expiry = '';
       }
       console.log('Fetched new item:', data);
-      setNewRow(data);
-      console.log(newRow);
-      console.log("calling handle save new row")
-      // You can handle the result here, e.g., add it to the inventory list
+      //setNewRow(data);
+      const res = await handleSaveNewRow(data);
+      console.log("calling handle save new row", res);
     } catch (error) {
       console.error('Error fetching new item:', error);
     }
+  };
+
+  const onChangesApplied = () => {
+    console.log('changes have been applied!');
+
+    setSnackbarMessage('Changes saved!');
+
+    setTimeout(() => {
+      setSnackbarMessage('');
+    }, 3000);
   };
 
 
@@ -211,7 +221,7 @@ export default function Page() {
       <table className="w-full table-auto bg-white shadow-md rounded-lg">
         <thead>
           <tr className="bg-orange-100 text-gray-600 uppercase text-sm leading-normal">
-            <th className="py-3 px-6 text-left"></th>
+            {/* <th className="py-3 px-6 text-left"></th> */}
             <th className="py-3 px-6 text-left">Name</th>
             <th className="py-3 px-6 text-left">Icon</th>
             <th className="py-3 px-6 text-left">Expiry Date</th>
@@ -224,12 +234,12 @@ export default function Page() {
             <tr
               key={rowIndex}
               className={`border-b border-gray-200 ${isDeleteMode && rowsToDelete.has(rowIndex)
-                  ? 'bg-orange-300 hover:bg-orange-400'
+                  ? 'bg-red-300 hover:bg-red-400'
                   : 'hover:bg-gray-100'
                 }`}
               onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}
             >
-              <td className="py-3 px-6 text-left">
+              {/* <td className="py-3 px-6 text-left">
                 {isDeleteMode && (
                   <input
                     type="checkbox"
@@ -237,7 +247,7 @@ export default function Page() {
                     onChange={() => handleRowSelectToggle(rowIndex)}
                   />
                 )}
-              </td>
+              </td> */}
               {Object.keys(row)
                 .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                 .map((attribute) => (
@@ -248,6 +258,7 @@ export default function Page() {
                       onChange={(e) =>
                         handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
                       }
+
                       className="bg-transparent"
                       style={{
                         width: '150px',
@@ -310,6 +321,7 @@ export default function Page() {
           {isDeleteMode ? 'Confirm' : 'Delete'}
         </button>
       </div>
+      <Snackbar message={snackbarMessage} visible={snackbarMessage.trim() !== ""} />
     </div>
   );
 }
