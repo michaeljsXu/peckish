@@ -14,7 +14,7 @@ export const pages = [
     label: 'Chat',
   },
   {
-    href: '/inventoryPopup',
+    href: '/inventory',
     label: 'Inventory',
   },
   {

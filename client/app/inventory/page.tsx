@@ -138,7 +138,6 @@ export default function Page() {
     <div
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
     >
-      <Navbar />
       <h1>Hello, Inventory page!</h1>
       <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
         <thead>
