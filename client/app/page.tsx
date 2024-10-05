@@ -8,6 +8,7 @@ import {
   LATE_NIGHT_PROMPT,
   LUNCH_PROMPT,
   RANDOM_PROMPT,
+  RANDOM_PROMPT_TITLE,
 } from './constants/constants';
 import dotenv from 'dotenv';
 
@@ -44,17 +45,17 @@ export default function Home() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       console.log('User input on Enter:', userInput);
-      handleNavigate();
+      handleNavigate(userInput);
     }
   };
 
-  const handleNavigate = (input?: string) => {
-    console.log('handleNavigate', input);
-    const queryParams: { [key: string]: string } = {
-      prompt: input ?? userInput,
-      available: useAvailable ? 'true' : 'false',
+  const handleNavigate = (input:string) => {
+    const data = {
+      prompt: input,
+      useAvailable: useAvailable ? 'true' : 'false',
     };
-    router.push('/chat?' + new URLSearchParams(queryParams).toString());
+    localStorage.setItem('chatData', JSON.stringify(data));
+    router.push('/chat');
   };
 
   return (
@@ -81,9 +82,9 @@ export default function Home() {
 
         <div>
           <button onClick={() => handleNavigate(RANDOM_PROMPT)} className="mr-5 btn-orange-outline">
-            {RANDOM_PROMPT}
+            {RANDOM_PROMPT_TITLE}
           </button>
-          <button onClick={() => handleNavigate()} className="btn-orange">
+          <button onClick={() => handleNavigate(userInput)} className="btn-orange">
             Enter
           </button>
         </div>

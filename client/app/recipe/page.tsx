@@ -44,7 +44,13 @@ export default function Page() {
       <h1 className="text-3xl font-bold my-4">Recipes</h1>
       <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
         {recipes.slice(0, visibleRecipes).map((recipe, index) => (
-          <RecipeCard key={index} recipe={recipe} />
+          <RecipeCard
+            key={index}
+            recipe={recipe}
+            onRecipeDelete={() => {
+              setRecipes((prevRecipes) => prevRecipes.filter((_, i) => i !== index));
+            }}
+          />
         ))}
       </div>
       {visibleRecipes < recipes.length && (

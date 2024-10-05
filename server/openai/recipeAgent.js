@@ -67,33 +67,35 @@ exports.agent = async (userInput, useAvailable) => {
   // });
 
   const response = {
-    message:
-      "To make a pasta dish, you'll need to purchase some ingredients. Here's a suggestion for a simple pasta recipe.",
-    recipe: {
-      name: "Pasta with Garlic and Olive Oil",
-      desc: "A quick and delicious pasta dish tossed with garlic and olive oil.",
-      ingredients: [
-        "pasta",
-        "garlic",
-        "olive oil",
-        "salt",
-        "pepper",
-        "parmesan cheese (optional)",
-      ],
-      steps: [
-        "Cook the pasta according to package instructions until al dente.",
-        "While the pasta cooks, heat olive oil in a pan over medium heat.",
-        "Add minced garlic to the oil and sauté until fragrant.",
-        "Drain the pasta and add it to the pan with the garlic oil.",
-        "Toss well to coat the pasta with the garlic and oil. Season with salt and pepper.",
-        "Serve with grated parmesan cheese if desired.",
-      ],
-      tools: ["pan", "pot", "knife"],
-      time: "15 minutes",
-      picture:
-        "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F1460872%2Fpexels-photo-1460872.jpeg%3Fcs%3Dsrgb%26dl%3Dpasta-with-green-leaf-and-chili-pepper-1460872.jpg%26fm%3Djpg&f=1&nofb=1&ipt=ee98b2fd87dcc0f47a4a019acd63a0e516b33ce2e06890194d56ec82778e0348&ipo=images",
-    },
-  };
+        "message": "To make a pasta dish, you'll need to purchase some ingredients. Here's a suggestion for a simple pasta recipe.",
+        "recipe": {
+            "name": "Pasta with Garlic and Olive Oil",
+            "desc": "A quick and delicious pasta dish tossed with garlic and olive oil.",
+            "ingredients": [
+                "pasta",
+                "garlic",
+                "olive oil",
+                "salt",
+                "pepper",
+                "parmesan cheese (optional)"
+            ],
+            "steps": [
+                "Cook the pasta according to package instructions until al dente.",
+                "While the pasta cooks, heat olive oil in a pan over medium heat.",
+                "Add minced garlic to the oil and sauté until fragrant.",
+                "Drain the pasta and add it to the pan with the garlic oil.",
+                "Toss well to coat the pasta with the garlic and oil. Season with salt and pepper.",
+                "Serve with grated parmesan cheese if desired."
+            ],
+            "tools": [
+                "pan",
+                "pot",
+                "knife"
+            ],
+            "time": "15 minutes",
+            "picture": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-VhBVR2aVz2Qx6KMqi5y0AOmV/user-dLKeNayLt6dFZL2lbsjCPA7l/img-47ZLRbzsisMruh0q1c2dz1sx.png?st=2024-10-04T18%3A58%3A42Z&se=2024-10-04T20%3A58%3A42Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-10-03T23%3A10%3A18Z&ske=2024-10-04T23%3A10%3A18Z&sks=b&skv=2024-08-04&sig=uYEVEYvIS9kHJDEOJfftgPrfBhuKLsTxZigoOqpo%2B/U%3D"
+        }
+    };
 
   let result = response;
 

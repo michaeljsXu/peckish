@@ -5,7 +5,7 @@ import Dialog from './dialog';
 import RecipePreview from './recipePreview';
 import Snackbar from './snackbar';
 
-const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
+const RecipeCard: React.FC<{ recipe: Recipe, onRecipeDelete: () => void }> = ({ recipe, onRecipeDelete }) => {
   // const [madeRecipe, setMadeRecipe] = useState<boolean>(false);
   const [openRecipe, setOpenRecipe] = useState<boolean>(false);
   const [openMadeRecipe, setOpenMadeRecipe] = useState<boolean>(false);
@@ -26,9 +26,24 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
       setSnackbarVisible(false);
       setSnackbarMessage('');
     }, 3000);
-
-    // TODO: open items to be deleted from database
   };
+
+  const deleteRecipe = async (id: string) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/recipe/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the recipe');
+      }
+
+      console.log('Recipe deleted successfully');
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
+  };
+
   const closeMadeRecipeDialog = () => setOpenMadeRecipe(false);
 
   const onRecipeClick = () => {
@@ -48,6 +63,16 @@ const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
             src={recipe.picture.startsWith('data:') || recipe.picture.startsWith('http') ? recipe.picture : `/path/to/images/${recipe.picture}`}
             alt={recipe.name}
           />
+            <button
+            className="absolute top-2 right-2 bg-gray-300 rounded-full p-1 hover:bg-gray-200 w-6 h-6 flex items-center justify-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteRecipe(recipe._id);
+              onRecipeDelete();
+            }}
+            >
+            &times;
+            </button>
         </div>
         <div className="px-6 py-4">
           <div className="flex flex-row justify-between items-center mb-2">

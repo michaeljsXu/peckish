@@ -7,14 +7,18 @@ import React from 'react';
 // TODO: anytime when save is clicked, make call to API and send info to backend
 export default function Page() {
   const [data, setData] = useState<InventoryItem[]>([]);
-  const [editingRow, setEditingRow] = useState<number | null>(null);
   const [newRow, setNewRow] = useState<Partial<InventoryItem> | null>(null);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());
+
+  const [isAddRow, setIsAddRow] = useState(true);
+  const [newItem, setNewItem] = useState<string>('');
 
   useEffect(() => {
     // Fetch data from the backend
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/item');
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -22,7 +26,7 @@ export default function Page() {
           id: item._id, // Assuming the backend returns _id
           name: item.name,
           icon: item.icon,
-          expiry: item.expiry,
+          expiry: item.expiry ? new Date(item.expiry).toISOString().split('T')[0] : '', // Format the date
           tags: item.tags,
           count: item.count,
         }));
@@ -34,10 +38,6 @@ export default function Page() {
     fetchData();
   }, []);
 
-  const handleEditToggle = (rowIndex: number) => {
-    setEditingRow(rowIndex);
-  };
-
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement>,
     rowIndex: number,
@@ -48,40 +48,37 @@ export default function Page() {
     setData(newData);
   };
 
-  const handleSave = async () => {
-    if (editingRow !== null) {
-      const updatedRow = data[editingRow];
-      try {
-        const response = await fetch(`http://localhost:4000/item/${updatedRow.id}`, {
+  const handleApplyChanges = async () => {
+    try {
+      const promises = data.map((item) =>
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item/${item.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(updatedRow),
-        });
-        if (!response.ok) {
-          throw new Error('Failed to update item');
-        }
-        const updatedItem = await response.json();
-        const { _id, __v, ...itemWithoutId } = updatedItem;
-        const newData = [...data];
-        newData[editingRow] = itemWithoutId;
-        setData(newData);
-        setEditingRow(null);
-      } catch (error) {
-        console.error('Error updating item:', error);
-      }
+          body: JSON.stringify(item),
+        }),
+      );
+      await Promise.all(promises);
+      alert('Changes applied successfully');
+    } catch (error) {
+      console.error('Error applying changes:', error);
     }
   };
 
   const handleAddNew = () => {
-    setNewRow({
-      name: '',
-      icon: '',
-      expiry: '',
-      tags: [],
-      count: '',
-    });
+    if (isAddRow) {
+      setNewRow({
+        name: '',
+        icon: '',
+        expiry: '',
+        tags: [],
+        count: '',
+      });
+    } else {
+      handleSaveNewRow();
+    }
+    setIsAddRow((prev) => !prev);
   };
 
   const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
@@ -93,7 +90,7 @@ export default function Page() {
   const handleSaveNewRow = async () => {
     if (newRow) {
       try {
-        const response = await fetch('http://localhost:4000/item', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -104,9 +101,15 @@ export default function Page() {
           throw new Error('Failed to save new item');
         }
         const savedItem = await response.json();
-        // Exclude the 'id' attribute from the saved item before updating the state
-        const { _id, __v, ...itemWithoutId } = savedItem;
-        setData([...data, itemWithoutId]);
+        // Format the expiry date before updating the state
+        const { _id, __v, ...correctItem } = savedItem;
+        const formattedItem = {
+          ...correctItem,
+          expiry: correctItem.expiry
+            ? new Date(correctItem.expiry).toISOString().split('T')[0]
+            : '',
+        };
+        setData([...data, formattedItem]);
         setNewRow(null);
       } catch (error) {
         console.error('Error saving new item:', error);
@@ -114,19 +117,36 @@ export default function Page() {
     }
   };
 
-  const handleDelete = async (rowIndex: number) => {
-    const itemToDelete = data[rowIndex];
+  const handleDeleteModeToggle = () => {
+    setIsDeleteMode(!isDeleteMode);
+    setRowsToDelete(new Set());
+  };
+
+  const handleRowSelectToggle = (rowIndex: number) => {
+    const newRowsToDelete = new Set(rowsToDelete);
+    if (newRowsToDelete.has(rowIndex)) {
+      newRowsToDelete.delete(rowIndex);
+    } else {
+      newRowsToDelete.add(rowIndex);
+    }
+    setRowsToDelete(newRowsToDelete);
+  };
+
+  const handleDeleteSelectedRows = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/item/${itemToDelete.id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Failed to delete item');
-      }
-      const newData = data.filter((_, index) => index !== rowIndex);
+      const promises = Array.from(rowsToDelete).map((rowIndex) =>
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item/${data[rowIndex].id}`, {
+          method: 'DELETE',
+        }),
+      );
+      await Promise.all(promises);
+      const newData = data.filter((_, index) => !rowsToDelete.has(index));
       setData(newData);
+      setIsDeleteMode(false);
+      setRowsToDelete(new Set());
+      alert('Selected rows deleted successfully');
     } catch (error) {
-      console.error('Error deleting item:', error);
+      console.error('Error deleting selected rows:', error);
     }
   };
 
@@ -134,91 +154,118 @@ export default function Page() {
     setNewRow(null);
   };
 
+  const handleMagicAdd = () => {
+    console.log('Handle Magic Add', newItem);
+    // TODO: call API here
+    // grab the response and add it to the data
+  };
+
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
-    >
-      <h1>Hello, Inventory page!</h1>
-      <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
+    <div className="h-full w-full flex flex-col items-center justify-start margins">
+      <h1>Inventory</h1>
+      <table className="w-full table-auto bg-white shadow-md rounded-lg">
         <thead>
-          <tr>
-            <th style={{ textAlign: 'center', width: '20%' }}>Name</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Icon</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Expiry Date</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Category</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Count</th>
-            <th style={{ textAlign: 'center', width: '20%' }}>Actions</th>
+          <tr className="bg-orange-100 text-gray-600 uppercase text-sm leading-normal">
+            <th className="py-3 px-6 text-left"></th>
+            <th className="py-3 px-6 text-left">Name</th>
+            <th className="py-3 px-6 text-left">Icon</th>
+            <th className="py-3 px-6 text-left">Expiry Date</th>
+            <th className="py-3 px-6 text-left">Category</th>
+            <th className="py-3 px-6 text-left">Count</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-gray-600 text-sm font-light">
           {data.map((row, rowIndex) => (
-            <tr key={rowIndex}>
+            <tr
+              key={rowIndex}
+              className={`border-b border-gray-200 ${
+                isDeleteMode && rowsToDelete.has(rowIndex)
+                  ? 'bg-orange-300 hover:bg-orange-400'
+                  : 'hover:bg-gray-100'
+              }`}
+              onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}
+            >
+              <td className="py-3 px-6 text-left">
+                {isDeleteMode && (
+                  <input
+                    type="checkbox"
+                    checked={rowsToDelete.has(rowIndex)}
+                    onChange={() => handleRowSelectToggle(rowIndex)}
+                  />
+                )}
+              </td>
               {Object.keys(row)
                 .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                 .map((attribute) => (
-                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                    {editingRow === rowIndex ? (
-                      <input
-                        type={attribute === 'expiry' ? 'date' : 'text'}
-                        value={row[attribute as keyof InventoryItem]}
-                        onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof InventoryItem)}
-                        style={{ width: '100px' }} // Adjust the width as needed
-                      />
-                    ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
-                      row[attribute as keyof InventoryItem].join(', ')
-                    ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
-                      row[attribute as keyof InventoryItem].toString()
-                    ) : (
-                      row[attribute as keyof InventoryItem]
-                    )}
+                  <td key={attribute} className="py-3 px-6 text-left">
+                    <input
+                      type={attribute === 'expiry' ? 'date' : 'text'}
+                      value={row[attribute as keyof InventoryItem]}
+                      onChange={(e) =>
+                        handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
+                      }
+                      className="bg-transparent"
+                      style={{
+                        width: '150px',
+                        // backgroundColor:
+                        //   isDeleteMode && rowsToDelete.has(rowIndex) ? 'red' : 'white',
+                      }} // Adjust the width as needed
+                      readOnly={isDeleteMode}
+                    />
                   </td>
                 ))}
-              <td style={{ textAlign: 'center', width: '20%' }}>
-                {editingRow === rowIndex ? (
-                  <>
-                    <button onClick={handleSave}>Save</button>
-                    <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
-                      Delete
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button onClick={() => handleEditToggle(rowIndex)}>Edit</button>
-                    <button onClick={() => handleDelete(rowIndex)} style={{ marginLeft: '10px' }}>
-                      Delete
-                    </button>
-                  </>
-                )}
-              </td>
             </tr>
           ))}
           {newRow && (
-            <tr>
+            <tr className="border-b border-gray-200 hover:bg-gray-100">
+              <td className="py-3 px-6 text-left"></td>
               {Object.keys(newRow)
                 .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                 .map((attribute) => (
-                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
+                  <td key={attribute} className="py-3 px-6 text-left">
                     <input
                       type={attribute === 'expiry' ? 'date' : 'text'}
                       value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
                       onChange={(e) => handleNewRowChange(e, attribute as keyof InventoryItem)}
-                      style={{ width: '100px' }} // Adjust the width as needed
+                      style={{ width: '150px' }} // Adjust the width as needed
                     />
                   </td>
                 ))}
-              <td style={{ textAlign: 'center', width: '20%' }}>
-                <button onClick={handleSaveNewRow}>Save</button>
-                <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
-                  Delete
-                </button>
-              </td>
             </tr>
           )}
         </tbody>
       </table>
-      <button onClick={handleAddNew} style={{ marginTop: '20px' }}>
-        Add New
-      </button>
+      <div className="flex flex-row justify-center gap-4 mt-5 w-full">
+        <div className="relative w-[300px]">
+          <input
+            type="text"
+            placeholder="Type an Item"
+            className="input-box w-full pr-10"
+            onChange={(event) => setNewItem(event.target.value)}
+            onKeyDown={(event) => (event.key === 'Enter' ? handleMagicAdd() : null)}
+            value={newItem}
+          />
+          <button
+            className="absolute right-0 top-0 h-full px-4 bg-orange-500 text-white rounded-tl-none rounded-tr-md rounded-bl-none rounded-br-md"
+            onClick={handleMagicAdd}
+          >
+            Add New
+          </button>
+        </div>
+
+        {/* <button onClick={handleAddNew} className="btn-orange-outline mr-4">
+          {isAddRow ? 'Add New' : 'Save New'}
+        </button> */}
+        <button onClick={handleApplyChanges} className="btn-orange">
+          Apply
+        </button>
+        <button
+          onClick={isDeleteMode ? handleDeleteSelectedRows : handleDeleteModeToggle}
+          className="btn-orange"
+        >
+          {isDeleteMode ? 'Confirm' : 'Delete'}
+        </button>
+      </div>
     </div>
   );
 }

@@ -85,9 +85,7 @@ export default function Page() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl font-bold">Loading...</div>
-      </div>
+      <></>
     );
   }
 
@@ -120,9 +118,8 @@ export default function Page() {
           ))}
         <button
           onClick={handleApplyChanges}
-          className={`mt-5 p-2 text-lg rounded border-none btn-orange text-white transition-transform duration-300 ${
-            isClicked ? 'transform scale-95' : ''
-          }`}
+          className={`mt-5 p-2 text-lg rounded border-none btn-orange text-white transition-transform duration-300 ${isClicked ? 'transform scale-95' : ''
+            }`}
         >
           Apply
         </button>

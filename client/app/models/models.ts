@@ -4,6 +4,7 @@ export interface Message {
 }
 
 export interface Recipe {
+  _id: string;
   name: string;
   picture: string;
   desc: string;
