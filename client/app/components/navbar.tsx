@@ -13,7 +13,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-gray-800 p-4 flex flex-row justify-around">
+      <nav className="bg-orange-500 p-4 flex flex-row justify-around">
         <div className="mx-auto flex flex-row justify-center items-center">
           {pages.map((page, index) => (
             <Link key={index} href={page.href} className="text-white mx-4">
