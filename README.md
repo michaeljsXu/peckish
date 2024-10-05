@@ -2,6 +2,10 @@
 
 # Peckish
 
+## Live view
+You must be on UofT wifi to see this live view!
+[http://100.70.148.32:3000](http://100.70.148.32:3000)
+
 ## Project Setup
 
 ```

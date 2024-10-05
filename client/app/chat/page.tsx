@@ -8,7 +8,7 @@ import { TypeAnimation } from 'react-type-animation';
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const effectRan = useRef(false);
-  const responseSound = new Audio("bird-response-sound.mp3");
+  //const responseSound = new Audio("bird-response-sound.mp3");
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
@@ -37,8 +37,8 @@ export default function Page() {
         if (data.recipe) {
           setRecipeAndSave(data.recipe);
         }
-        responseSound.volume = 0.2;
-        responseSound.play();
+        // responseSound.volume = 0.2;
+        // responseSound.play();
       }
     } catch (error) {
       console.error('Error fetching message:', error);

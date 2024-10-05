@@ -102,17 +102,18 @@ export default function Page() {
           .map(([field, value]) => (
             <div key={field} className="flex flex-col">
               <label className="mb-1 font-bold">
-                {field.charAt(0).toUpperCase() + field.slice(1)}:
+              {field.charAt(0).toUpperCase() + field.slice(1)}:
               </label>
               <textarea
-                ref={(el) => {
-                  textareaRefs.current[field] = el;
-                }}
-                value={value as string}
-                onChange={(e) => handleTextareaChange(e, field)}
-                className="p-2 text-lg rounded border border-gray-300 resize-none overflow-hidden"
-                rows={1}
-                style={{ minHeight: '2.5rem' }}
+              ref={(el) => {
+                textareaRefs.current[field] = el;
+              }}
+              value={value as string}
+              onChange={(e) => handleTextareaChange(e, field)}
+              className="p-2 text-lg rounded border border-gray-300 resize-none overflow-hidden"
+              rows={1}
+              style={{ minHeight: '2.5rem' }}
+              readOnly={field === 'name'}
               />
             </div>
           ))}
