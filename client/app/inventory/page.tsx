@@ -1,8 +1,7 @@
 'use client';
 import { useState, ChangeEvent, useEffect } from 'react';
 import Navbar from '../components/navbar';
-import { mockItems } from '../mockData/mockData';
-import { InventoryItem, categories } from '../models/models';
+import { InventoryItem } from '../models/models';
 import React from 'react';
 
 // TODO: anytime when save is clicked, make call to API and send info to backend
@@ -137,11 +136,10 @@ export default function Page() {
 
   return (
     <div
-      className="margins"
       style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh' }}
     >
       <Navbar />
-      <h1>Hello, InventoryItem page!</h1>
+      <h1>Hello, Inventory page!</h1>
       <table style={{ marginTop: '20px', borderCollapse: 'collapse', width: '80%' }}>
         <thead>
           <tr>
@@ -156,35 +154,15 @@ export default function Page() {
         <tbody>
           {data.map((row, rowIndex) => (
             <tr key={rowIndex}>
-              {Object.keys(row).map((attribute) => (
-                <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                  {editingRow === rowIndex ? (
-                    attribute === 'tags' ? (
-                      <select
-                        multiple
-                        value={row[attribute as keyof InventoryItem]}
-                        onChange={(e) => {
-                          const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                          const newValue = row[attribute as keyof InventoryItem].includes(selectedOptions[0])
-                            ? row[attribute as keyof InventoryItem].filter((item: string) => item !== selectedOptions[0])
-                            : [...row[attribute as keyof InventoryItem], ...selectedOptions];
-                          handleInputChange({ ...e, target: { ...e.target, value: newValue } } as ChangeEvent<HTMLInputElement>, rowIndex, attribute as keyof InventoryItem);
-                        }}
-                        style={{ width: '100px' }} // Adjust the width as needed
-                      >
-                        {categories.map((category) => (
-                          <option key={category} value={category}>
-                            {row[attribute as keyof InventoryItem].includes(category) ? '✔️' : ''}{category}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
+              {Object.keys(row)
+                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                .map((attribute) => (
+                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
+                    {editingRow === rowIndex ? (
                       <input
                         type={attribute === 'expiry' ? 'date' : 'text'}
                         value={row[attribute as keyof InventoryItem]}
-                        onChange={(e) =>
-                          handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
-                        }
+                        onChange={(e) => handleInputChange(e, rowIndex, attribute as keyof InventoryItem)}
                         style={{ width: '100px' }} // Adjust the width as needed
                       />
                     ) : Array.isArray(row[attribute as keyof InventoryItem]) ? (
@@ -192,10 +170,10 @@ export default function Page() {
                     ) : typeof row[attribute as keyof InventoryItem] === 'boolean' ? (
                       row[attribute as keyof InventoryItem].toString()
                     ) : (
-                    row[attribute as keyof InventoryItem]
-                  )}
-                </td>
-              ))}
+                      row[attribute as keyof InventoryItem]
+                    )}
+                  </td>
+                ))}
               <td style={{ textAlign: 'center', width: '20%' }}>
                 {editingRow === rowIndex ? (
                   <>
@@ -217,28 +195,10 @@ export default function Page() {
           ))}
           {newRow && (
             <tr>
-              {Object.keys(newRow).map((attribute) => (
-                <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
-                  {attribute === 'tags' ? (
-                    <select
-                      multiple
-                      value={newRow[attribute as keyof InventoryItem]}
-                      onChange={(e) => {
-                        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
-                        const newValue = newRow[attribute as keyof InventoryItem].includes(selectedOptions[0])
-                          ? newRow[attribute as keyof InventoryItem].filter((item: string) => item !== selectedOptions[0])
-                          : [...newRow[attribute as keyof InventoryItem], ...selectedOptions];
-                        handleNewRowChange({ ...e, target: { ...e.target, value: newValue } } as ChangeEvent<HTMLInputElement>, attribute as keyof InventoryItem);
-                      }}
-                      style={{ width: '100px' }} // Adjust the width as needed
-                    >
-                      {categories.map((category) => (
-                        <option key={category} value={category}>
-                          {newRow[attribute as keyof InventoryItem].includes(category) ? '✔️ ' : ''}{category}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
+              {Object.keys(newRow)
+                .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
+                .map((attribute) => (
+                  <td key={attribute} style={{ textAlign: 'center', width: '20%' }}>
                     <input
                       type={attribute === 'expiry' ? 'date' : 'text'}
                       value={newRow[attribute as keyof InventoryItem] || ''} // Ensure value is a string
@@ -246,7 +206,7 @@ export default function Page() {
                       style={{ width: '100px' }} // Adjust the width as needed
                     />
                   </td>
-              ))}
+                ))}
               <td style={{ textAlign: 'center', width: '20%' }}>
                 <button onClick={handleSaveNewRow}>Save</button>
                 <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
