@@ -11,7 +11,7 @@ router.use('/utility', utilityRouter);
 router.use('/item', itemRouter);
 router.use('/recipe', recipeRouter);
 router.use('/user', userRouter);
-router.use('/prompt', promptRouter)
+router.use('/prompt', promptRouter);
 router.get('/', indexController.home);
 
 module.exports = router;
