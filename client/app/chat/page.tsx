@@ -1,10 +1,10 @@
 'use client';
 
-
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import { Message, Recipe } from '../models/models';
 import RecipePreview from '../components/recipePreview';
 import { TypeAnimation } from 'react-type-animation';
+import local from 'next/font/local';
 
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -15,6 +15,7 @@ export default function Page() {
   const [input, setInput] = useState<string>('');
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [useAvailable, setUseAvailable] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
 
   const fetchAndSetResponse = async ({ prompt, useAvailable }: { prompt: string; useAvailable: boolean }) => {
     try {
@@ -33,7 +34,7 @@ export default function Page() {
       if (data.result) {
         setMessages((prevMessages) => [...prevMessages, { type: 'bot', text: data.result.message }]);
         if (data.result.recipe) {
-          setRecipe(data.result.recipe);
+          setRecipeAndSave(data.result.recipe);
         }
         responseSound.volume = 0.2;
         responseSound.play();
@@ -43,13 +44,22 @@ export default function Page() {
     }
   };
 
+  const setRecipeAndSave = (recipe: Recipe) => {
+    setRecipe(recipe);
+    localStorage.setItem('recipe', JSON.stringify(recipe));
+  }
+
 
   useEffect(() => {
     if (effectRan.current) {
       return;
     }
     const storedData = localStorage.getItem('chatData');
+    localStorage.removeItem('chatData');
     const data = storedData ? JSON.parse(storedData) : {};
+
+    const storedMessages = localStorage.getItem('messages');
+    setMessages(storedMessages ? JSON.parse(storedMessages) : []);
 
     if (data.useAvailable) {
       setUseAvailable(data.useAvailable);
@@ -57,16 +67,22 @@ export default function Page() {
 
     if (data.prompt) {
       setMessages(() => [{ type: 'user', text: data.prompt }]);
+      setIsLoading(true);
+      fetchAndSetResponse(data);
+    } else {
+      if (localStorage.getItem('recipe')) {
+        const storedRecipe = localStorage.getItem('recipe');
+        if (storedRecipe) {
+          setRecipe(JSON.parse(storedRecipe));
+        }
+      }
     }
 
-    fetchAndSetResponse(data);
     effectRan.current = true;
   }, []);
 
   useEffect(() => {
-    console.log('Updating messages');
-    console.log('Messages', messages);
-
+    localStorage.setItem('messages', JSON.stringify(messages));
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -104,16 +120,19 @@ export default function Page() {
               )}
               <div className={`max-w-[90%] p-2 rounded-lg flex  ${message.type === 'bot' ? '' : 'bg-gray-200'}`}>
                 {message.type === 'bot' ? (
-                  <p className="w-fit"><TypeAnimation
-                    sequence={[
-                      message.text
-                    ]}
-                    wrapper="span"
-                    cursor={false}
-                    repeat={0}
-                    speed={75}
-                    style={{}}
-                  /></p>
+                  index === messages.length - 1 ? (
+                    <p className="w-fit">
+                      <TypeAnimation
+                        sequence={[message.text]}
+                        wrapper="span"
+                        cursor={false}
+                        speed={75}
+                        style={{}}
+                      />
+                    </p>
+                  ) : (
+                    <p className="w-fit">{message.text}</p>
+                  )
                 ) : (
                   <p className="w-fit">{message.text}</p>
                 )}
@@ -150,14 +169,19 @@ export default function Page() {
             </div>
           </>
         ) : (
-          <>
-            <div className="justify-center">
-              <div
-                className="h-9 w-9 animate-spin rounded-full border-4 border-orange-500 border-solid border-current border-e-transparent align-[-0.125em] text-primary motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                role="status"
-              ></div>
-            </div>
-          </>
+          isloading ?
+            (<>
+              <div className="justify-center">
+                <div
+                  className="h-9 w-9 animate-spin rounded-full border-4 border-orange-500 border-solid border-current border-e-transparent align-[-0.125em] text-primary motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status"
+                ></div>
+              </div>
+            </>) : (
+              <div className="text-center text-gray-500">
+                Recipes generated will show here!
+              </div>
+            )
         )}
       </div>
     </div>

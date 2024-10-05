@@ -2,7 +2,7 @@ import React from 'react';
 import { Recipe } from '../models/models';
 
 const RecipePreview: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
-  const onSave = () => {
+  const onSave = async () => {
     console.log('save recipe');
     // TODO: call backend
   };
