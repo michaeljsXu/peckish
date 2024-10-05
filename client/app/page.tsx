@@ -49,14 +49,8 @@ export default function Home() {
     }
   };
 
-  const handleButtonClick = () => {
-    console.log(RANDOM_PROMPT);
-    handleNavigate(RANDOM_PROMPT);
-    // suggest me anything
-    // message, useAvailable
-  };
-
   const handleNavigate = (input?: string) => {
+    console.log('handleNavigate', input);
     const queryParams: { [key: string]: string } = {
       prompt: input ?? userInput,
       available: useAvailable ? 'true' : 'false',
@@ -68,7 +62,7 @@ export default function Home() {
     <div className="h-screen w-screen">
       <Navbar />
       <main className="h-full w-full flex flex-col justify-center items-center gap-6">
-        <h1>{mainMessage}</h1>
+        <h1 className="text-center">{mainMessage}</h1>
         <input
           type="text"
           value={userInput}
@@ -88,13 +82,10 @@ export default function Home() {
         </div>
 
         <div>
-          <button onClick={handleButtonClick} className="mr-5 btn-orange-outline">
+          <button onClick={() => handleNavigate(RANDOM_PROMPT)} className="mr-5 btn-orange-outline">
             {RANDOM_PROMPT}
           </button>
-          <button
-            onClick={() => console.log('User input on Enter:', userInput)}
-            className="btn-orange"
-          >
+          <button onClick={() => handleNavigate()} className="btn-orange">
             Enter
           </button>
         </div>
