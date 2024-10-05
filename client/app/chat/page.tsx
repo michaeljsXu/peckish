@@ -6,10 +6,9 @@ import { Message, Recipe } from '../models/models';
 import { mockRecipePreview } from '../mockData/mockData';
 import RecipePreview from '../components/recipePreview';
 
-const responseSound = new Audio("../../public/bird-response-sound.mp3");
-
 export default function Page() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const responseSound = new Audio("bird-response-sound.mp3");
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
