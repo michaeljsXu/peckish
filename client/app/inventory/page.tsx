@@ -11,6 +11,8 @@ export default function Page() {
   const [isDeleteMode, setIsDeleteMode] = useState(false);
   const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());
 
+  const [isAddRow, setIsAddRow] = useState(true);
+
   useEffect(() => {
     // Fetch data from the backend
     const fetchData = async () => {
@@ -64,13 +66,18 @@ export default function Page() {
   };
 
   const handleAddNew = () => {
-    setNewRow({
-      name: '',
-      icon: '',
-      expiry: '',
-      tags: [],
-      count: '',
-    });
+    if (isAddRow) {
+      setNewRow({
+        name: '',
+        icon: '',
+        expiry: '',
+        tags: [],
+        count: '',
+      });
+    } else {
+      handleSaveNewRow();
+    }
+    setIsAddRow((prev) => !prev);
   };
 
   const handleNewRowChange = (e: ChangeEvent<HTMLInputElement>, attribute: keyof InventoryItem) => {
@@ -152,7 +159,7 @@ export default function Page() {
       <table className="w-full table-auto bg-white shadow-md rounded-lg">
         <thead>
           <tr className="bg-orange-100 text-gray-600 uppercase text-sm leading-normal">
-            {isDeleteMode && <th className='className="py-3 px-6 text-left"'></th>}
+            <th className="py-3 px-6 text-left"></th>
             <th className="py-3 px-6 text-left">Name</th>
             <th className="py-3 px-6 text-left">Icon</th>
             <th className="py-3 px-6 text-left">Expiry Date</th>
@@ -164,18 +171,22 @@ export default function Page() {
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className="border-b border-gray-200 hover:bg-gray-100"
+              className={`border-b border-gray-200 ${
+                isDeleteMode && rowsToDelete.has(rowIndex)
+                  ? 'bg-orange-300 hover:bg-orange-400'
+                  : 'hover:bg-gray-100'
+              }`}
               onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}
             >
-              {isDeleteMode && (
-                <td className="py-3 px-6 text-left">
+              <td className="py-3 px-6 text-left">
+                {isDeleteMode && (
                   <input
                     type="checkbox"
                     checked={rowsToDelete.has(rowIndex)}
                     onChange={() => handleRowSelectToggle(rowIndex)}
                   />
-                </td>
-              )}
+                )}
+              </td>
               {Object.keys(row)
                 .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                 .map((attribute) => (
@@ -186,10 +197,11 @@ export default function Page() {
                       onChange={(e) =>
                         handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
                       }
+                      className="bg-transparent"
                       style={{
                         width: '150px',
-                        backgroundColor:
-                          isDeleteMode && rowsToDelete.has(rowIndex) ? 'red' : 'white',
+                        // backgroundColor:
+                        //   isDeleteMode && rowsToDelete.has(rowIndex) ? 'red' : 'white',
                       }} // Adjust the width as needed
                       readOnly={isDeleteMode}
                     />
@@ -199,7 +211,7 @@ export default function Page() {
           ))}
           {newRow && (
             <tr className="border-b border-gray-200 hover:bg-gray-100">
-              {isDeleteMode && <td style={{ textAlign: 'center', width: '5%' }}></td>}
+              <td className="py-3 px-6 text-left"></td>
               {Object.keys(newRow)
                 .filter((attribute) => attribute !== 'id') // Exclude the 'id' attribute
                 .map((attribute) => (
@@ -212,19 +224,13 @@ export default function Page() {
                     />
                   </td>
                 ))}
-              <td className="py-3 px-6 text-left">
-                <button onClick={handleSaveNewRow}>Save</button>
-                <button onClick={handleCancelNewRow} style={{ marginLeft: '10px' }}>
-                  Delete
-                </button>
-              </td>
             </tr>
           )}
         </tbody>
       </table>
       <div style={{ marginTop: '20px' }}>
         <button onClick={handleAddNew} className="btn-orange-outline mr-4">
-          Add New
+          {isAddRow ? 'Add New' : 'Save New'}
         </button>
         <button onClick={handleApplyChanges} className="btn-orange mr-4">
           Apply
