@@ -62,7 +62,7 @@ exports.agent = async (userInput, useAvailable) => {
   });
 
   const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
+    model: "chatgpt-4o-latest",
     messages: messages,
   });
 
