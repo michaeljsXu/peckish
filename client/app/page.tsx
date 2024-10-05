@@ -10,6 +10,9 @@ import {
   LUNCH_PROMPT,
   RANDOM_PROMPT,
 } from './constants/constants';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export default function Home() {
   const router = useRouter();

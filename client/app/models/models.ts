@@ -5,13 +5,12 @@ export interface Message {
 
 export interface Recipe {
   name: string;
-  img: string;
-  description: string;
+  picture: string;
+  desc: string;
   ingredients: string[];
   steps: string[];
   tools: string[];
-  prepTime?: string;
-  cookTime?: string;
+  time: string;
 }
 
 export interface InventoryItem {
