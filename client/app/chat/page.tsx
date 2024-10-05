@@ -16,7 +16,6 @@ export default function Page() {
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [useAvailable, setUseAvailable] = useState(false);
 
-  console
   const fetchAndSetResponse = async ({ prompt, useAvailable }: { prompt: string; useAvailable: boolean }) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/prompt/message`, {
