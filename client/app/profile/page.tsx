@@ -27,11 +27,11 @@ export default function Page() {
       const updatedUser = await response.json();
       setUser(updatedUser);
       setShowAlert(true);
-      setTimeout(() => setShowAlert(false), 1000); // Hide alert after 3 seconds
+      setTimeout(() => setShowAlert(false), 1000);
     } catch (error) {
       console.error('Error updating user info:', error);
     } finally {
-      setTimeout(() => setIsClicked(false), 100); // Reset the click state after 300ms
+      setTimeout(() => setIsClicked(false), 100);
     }
   };
 
