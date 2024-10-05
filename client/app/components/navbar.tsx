@@ -14,14 +14,17 @@ export default function Navbar() {
   return (
     <>
       <nav className="bg-gray-800 p-4 flex flex-row justify-around">
-        {pages.map((page, index) => (
-          <Link key={index} href={page.href} className="text-white">
-            {page.label}
-          </Link>
-        ))}
+        <div className="mx-auto">
+          {pages.map((page, index) => (
+            <Link key={index} href={page.href} className="text-white mx-4">
+              {page.label}
+            </Link>
+          ))}
+        </div>
       </nav>
 
-      <nav className="relative">
+      {/* FUTURE! MOBILE */}
+      {/* <nav className="relative">
         <button
           onClick={toggleMenu}
           className="fixed top-4 left-4 p-2 bg-gray-800 text-white rounded"
@@ -59,7 +62,7 @@ export default function Navbar() {
             </ul>
           </div>
         )}
-      </nav>
+      </nav> */}
     </>
   );
 }

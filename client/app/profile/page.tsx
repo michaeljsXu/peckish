@@ -92,7 +92,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex flex-col items-center h-screen margins">
+    <div className="h-full w-full flex flex-col items-center margins">
       {showAlert && (
         <div className="fixed top-0 left-0 right-0 bg-green-500 text-white text-center p-4">
           Update successful!

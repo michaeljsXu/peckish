@@ -23,11 +23,13 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <body className={`${poppins.className} antialiased`}>
+      <body className={`h-screen w-screen ${poppins.className} antialiased`}>
         <header>
           <Navbar />
         </header>
-        {children}
+        <main className="flex flex-col" style={{ height: 'calc(100vh - 60px)' }}>
+          {children}
+        </main>
       </body>
     </html>
   );

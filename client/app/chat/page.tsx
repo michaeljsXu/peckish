@@ -63,7 +63,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="h-screen w-screen flex flex-row">
+      <div className="h-full w-full flex flex-row">
         <div className="h-full w-full flex flex-col max-w-[60%] justify-end items-center margins">
           <div className="relative bottom-0 w-full overflow-y-auto">
             {/* <div className="flex flex-col justify-end"> */}
