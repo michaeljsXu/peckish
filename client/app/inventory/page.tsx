@@ -12,6 +12,7 @@ export default function Page() {
   const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());
 
   const [isAddRow, setIsAddRow] = useState(true);
+  const [newItem, setNewItem] = useState<string>('');
 
   useEffect(() => {
     // Fetch data from the backend
@@ -153,6 +154,12 @@ export default function Page() {
     setNewRow(null);
   };
 
+  const handleMagicAdd = () => {
+    console.log('Handle Magic Add', newItem);
+    // TODO: call API here
+    // grab the response and add it to the data
+  };
+
   return (
     <div className="h-full w-full flex flex-col items-center justify-start margins">
       <h1>Inventory</h1>
@@ -228,16 +235,33 @@ export default function Page() {
           )}
         </tbody>
       </table>
-      <div style={{ marginTop: '20px' }}>
-        <button onClick={handleAddNew} className="btn-orange-outline mr-4">
+      <div className="flex flex-row justify-center gap-4 mt-5 w-full">
+        <div className="relative w-[300px]">
+          <input
+            type="text"
+            placeholder="Type an Item"
+            className="input-box w-full pr-10"
+            onChange={(event) => setNewItem(event.target.value)}
+            onKeyDown={(event) => (event.key === 'Enter' ? handleMagicAdd() : null)}
+            value={newItem}
+          />
+          <button
+            className="absolute right-0 top-0 h-full px-4 bg-orange-500 text-white rounded-tl-none rounded-tr-md rounded-bl-none rounded-br-md"
+            onClick={handleMagicAdd}
+          >
+            Add New
+          </button>
+        </div>
+
+        {/* <button onClick={handleAddNew} className="btn-orange-outline mr-4">
           {isAddRow ? 'Add New' : 'Save New'}
-        </button>
-        <button onClick={handleApplyChanges} className="btn-orange mr-4">
+        </button> */}
+        <button onClick={handleApplyChanges} className="btn-orange">
           Apply
         </button>
         <button
           onClick={isDeleteMode ? handleDeleteSelectedRows : handleDeleteModeToggle}
-          className="btn-orange mr-4"
+          className="btn-orange"
         >
           {isDeleteMode ? 'Confirm' : 'Delete'}
         </button>
