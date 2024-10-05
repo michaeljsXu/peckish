@@ -20,6 +20,7 @@ const messages = [
 ];
 
 exports.agent = async (userInput) => {
+  console.log("user input is", userInput);
   messages.push({
     role: "user",
     content: userInput,
@@ -28,6 +29,7 @@ exports.agent = async (userInput) => {
     model: "gpt-4o-mini",
     messages: messages,
   });
+  console.log(JSON.parse(response.choices[0].message.content))
   return response.choices[0].message.content;
 }
 

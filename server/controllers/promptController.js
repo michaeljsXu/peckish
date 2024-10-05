@@ -6,7 +6,6 @@ const seenItem = require('../models/seenItemModel');
 // Controller function to handle output from chatbot to the user
 exports.promptMessage = async (req, res) => {
   try {
-    //console.log(req.body);
     const result = await recipeAgent.agent(req.body.prompt, req.body.useAvailable);
     res.status(200).json({ result });
   } catch (err) {
@@ -16,7 +15,7 @@ exports.promptMessage = async (req, res) => {
 
 exports.promptItem = async (req, res) => {
     try {
-      const prompt = req.body.prompt;
+      const prompt = req.params.item;
       let result = {};
   
       // Check if the item name already exists in the SeenItem model
