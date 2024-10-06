@@ -3,7 +3,8 @@
 # Peckish
 
 ## Live view
-You must be on UofT wifi to see this live view!
+You must be on UofT wifi to see this live view!\
+Please use google chrome \
 [http://100.70.148.32:3000](http://100.70.148.32:3000)
 
 ## Project Setup
