@@ -1,6 +1,5 @@
 'use client';
 import { useState, ChangeEvent, useEffect, useRef } from 'react';
-import Navbar from '../components/navbar';
 import { InventoryItem } from '../models/models';
 import React from 'react';
 import Snackbar from '../components/snackbar';
@@ -9,7 +8,7 @@ export default function Page() {
   const isFirstRender = useRef(true);
   const [data, setData] = useState<InventoryItem[]>([]);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());''
+  const [rowsToDelete, setRowsToDelete] = useState<Set<number>>(new Set());
   const [snackbarMessage, setSnackbarMessage] = useState<string>('');
 
   // const [isAddRow, setIsAddRow] = useState(true);
@@ -19,7 +18,6 @@ export default function Page() {
     if (!isFirstRender.current) return; // only render the first time
     // Fetch data from the backend
     const fetchData = async () => {
-
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/item`, {
           method: 'GET',
@@ -94,9 +92,7 @@ export default function Page() {
       const { _id, __v, ...correctItem } = savedItem;
       const formattedItem = {
         ...correctItem,
-        expiry: correctItem.expiry
-          ? new Date(correctItem.expiry).toISOString().split('T')[0]
-          : '',
+        expiry: correctItem.expiry ? new Date(correctItem.expiry).toISOString().split('T')[0] : '',
       };
       setData([...data, formattedItem]);
     } catch (error) {
@@ -110,7 +106,7 @@ export default function Page() {
   };
 
   const handleRowSelectToggle = (rowIndex: number) => {
-    setRowsToDelete(prevSet => {
+    setRowsToDelete((prevSet) => {
       const newSet = new Set(prevSet);
       if (prevSet.has(rowIndex)) {
         newSet.delete(rowIndex);
@@ -160,7 +156,7 @@ export default function Page() {
       } else {
         data.expiry = '';
       }
-      
+
       handleSaveNewRow(data);
     } catch (error) {
       console.error('Error fetching new item:', error);
@@ -177,11 +173,10 @@ export default function Page() {
     }, 3000);
   };
 
-
   return (
     <div className="h-full w-full flex flex-col items-center justify-start margins">
       <h1>Inventory</h1>
-      <table className="w-full table-auto bg-white shadow-md rounded-lg">
+      <table className="table-auto bg-white shadow-md rounded-lg">
         <thead>
           <tr className="bg-orange-100 text-gray-600 uppercase text-sm leading-normal">
             {/* <th className="py-3 px-6 text-left"></th> */}
@@ -196,10 +191,11 @@ export default function Page() {
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className={`border-b border-gray-200 ${isDeleteMode && rowsToDelete.has(rowIndex)
+              className={`border-b border-gray-200 ${
+                isDeleteMode && rowsToDelete.has(rowIndex)
                   ? 'bg-red-300 hover:bg-red-400'
                   : 'hover:bg-gray-100'
-                }`}
+              }`}
               onClick={() => isDeleteMode && handleRowSelectToggle(rowIndex)}
             >
               {Object.keys(row)
@@ -212,7 +208,9 @@ export default function Page() {
                       onChange={(e) =>
                         handleInputChange(e, rowIndex, attribute as keyof InventoryItem)
                       }
-                      className="bg-transparent w-[150px]"
+                      className={
+                        'bg-transparent ' + (attribute === 'icon' ? 'w-[60px]' : 'min-w-[150px]')
+                      }
                       readOnly={isDeleteMode}
                     />
                   </td>
@@ -252,7 +250,7 @@ export default function Page() {
           {isDeleteMode ? 'Confirm' : 'Delete'}
         </button>
       </div>
-      <Snackbar message={snackbarMessage} visible={snackbarMessage.trim() !== ""} />
+      <Snackbar message={snackbarMessage} visible={snackbarMessage.trim() !== ''} />
     </div>
   );
 }
